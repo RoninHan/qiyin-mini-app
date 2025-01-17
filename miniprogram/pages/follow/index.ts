@@ -11,59 +11,170 @@ Page({
       { text: '銷量排序', value: 2 },
     ],
     value: 0,
+    // lyrics: [
+    //   { time: 0, text: '总有些惊奇的际遇', highlight: false },
+    //   { time: 15.6, text: '比方说当我遇见你', highlight: false },
+    //   { time: 20.8, text: '你那双温柔剔透的眼睛', highlight: false },
+    //   { time: 28.6, text: '出现在我梦里', highlight: false },
+    //   { time: 31.2, text: '我的爱就像一片云', highlight: false },
+    //   { time: 36.4, text: '在你的天空无处停', highlight: false },
+    //   { time: 41.6, text: '多渴望化成阵阵的小雨', highlight: false },
+    //   { time: 48.1, text: '滋润你心中的土地', highlight: false },
+    //   { time: 53.3, text: '不管未来会怎么样', highlight: false },
+    //   { time: 58.5, text: '至少我们现在很开心', highlight: false },
+    //   { time: 63.7, text: '不管结局会怎么样', highlight: false },
+    //   { time: 68.9, text: '至少想念的人是你', highlight: false },
+    //   // 继续填写其他歌词...
+    // ],
     lyrics: [
-      { time: 0, text: '总有些惊奇的际遇' },
-      { time: 15.6, text: '比方说当我遇见你' },
-      { time: 20.8, text: '你那双温柔剔透的眼睛' },
-      { time: 28.6, text: '出现在我梦里' },
-      { time: 31.2, text: '我的爱就像一片云' },
-      { time: 36.4, text: '在你的天空无处停' },
-      { time: 41.6, text: '多渴望化成阵阵的小雨' },
-      { time: 48.1, text: '滋润你心中的土地' },
-      { time: 53.3, text: '不管未来会怎么样' },
-      { time: 58.5, text: '至少我们现在很开心' },
-      { time: 63.7, text: '不管结局会怎么样' },
-      { time: 68.9, text: '至少想念的人是你' },
+      '[00:00.00]总有些#9惊奇的_6际遇',
+      '[00:15.60]比方说#9当我遇_6见你',
+      '[00:20.80]你那双#9温柔剔_6透的_2眼睛_5',
+      '[00:28.60]出现在_9我梦里',
+      '[00:31.20]我的爱#9就像一_6片云',
+      '[00:36.40]在你的#9天空无_6处停',
+      '[00:41.60]多渴望#9化成阵_6阵的_2小雨',
+      '[00:48.10]滋润#9你心中的_6土地_1',
+      '[00:53.30]不管_1未来_7会怎_2么样',
+      '[00:58.50]至少_9我们现在_6很开心_1',
+      '[01:03.70]不管_1结局_7会怎_2么样',
+      '[01:08.90]至少_9想念的人_9是你_6',
       // 继续填写其他歌词...
     ],
+    formattedLyrics: [],
     scrollTop: 0, // 控制歌词滚动的位置
     currentTime: 0, // 当前时间（模拟）
     highlightIndex: 0, // 当前高亮歌词的索引
-
+    isPaused: false, // 播放暂停状态
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    const id = JSON.parse(decodeURIComponent(options.id));
+    // const id = JSON.parse(decodeURIComponent(options.id));
+    // this.startLyricsScroll();
+    this.extractTime(); // 提取时间并存储
+    this.formatLyrics();
     this.startLyricsScroll();
+
+    this.scrollToFirstLine();
+  },
+  // 提取歌词中的时间戳并为每一行设置 time 属性
+  extractTime() {
+    const updatedLyrics = this.data.lyrics.map((line) => {
+      const timeRegex = /\[(\d{2}):(\d{2}\.\d{2})\]/; // 匹配类似 [00:00.00] 的时间戳
+      const match = line.match(timeRegex);
+      if (match) {
+        const minutes = parseInt(match[1], 10);
+        const seconds = parseFloat(match[2]);
+        const totalTime = minutes * 60 + seconds; // 转化为秒数
+        const lyricText = line.replace(timeRegex, ''); // 去掉时间戳部分
+        return {
+          time: totalTime, // 为每一行歌词设置 time
+          text: lyricText.trim(), // 保存原始歌词
+        };
+      }
+      return { time: 0, text: line }; // 如果没有时间戳，设置默认值 0
+    });
+
+    this.setData({
+      lyrics: updatedLyrics, // 更新 data 中的 lyrics
+    });
   },
 
+  // 格式化歌词，处理 #9 和 _6，生成格式化后的歌词
+  formatLyrics() {
+    const formatted = this.data.lyrics.map((line) => {
+      let formattedLine = [];
+      let regex = /[#].{2}|_(\d+)|([^#_]+)/g;
+      let matches = line.text.match(regex);
+      if (matches) {
+        // console.log(matches)
+        matches.forEach((match) => {
+          if (match.startsWith('#')) {
+            console.log(match.slice(1)[1])
+            formattedLine.push({ name: 'span', attrs: { style: 'color: red;' }, children: [{ type: 'text', text: match.slice(1)[1] }] });
+          } else if (match.startsWith('_')) {
+            formattedLine.push({ name: 'span', attrs: { style: 'font-size: 12px; vertical-align: super;' }, children: [{ type: 'text', text: " " }] });
+          } else {
+            formattedLine.push({ type: 'text', text: match });
+          }
+        });
+      }
+      line.text = [{ name: 'div', children: formattedLine }];
+      return line
+    });
+    console.log(formatted)
+    this.setData({
+      formattedLyrics: formatted,
+    });
+  },
+
+  // 开始歌词滚动的定时器
   startLyricsScroll() {
-    // 每秒更新一次当前时间
-    setInterval(() => {
+    const totalDuration = this.data.lyrics[this.data.lyrics.length - 1].time; // 获取歌词总时长
+    this.timer = setInterval(() => {
+      if (this.data.currentTime >= totalDuration || this.data.isPaused) {
+        clearInterval(this.timer); // 停止定时器
+        return;
+      }
+
+      // 更新当前时间
       this.setData({
         currentTime: this.data.currentTime + 1,
       });
-      console.log(this.data.currentTime)
+
+      // 更新歌词高亮和滚动位置
       this.updateLyricsHighlight();
     }, 1000);
   },
+  // 滚动到第一行歌词
+  scrollToFirstLine() {
+    const lineHeight = 24; // 每行歌词的高度（根据需要调整）
+    const containerHeight = 150; // 假设歌词容器的高度为 300（根据需要调整）
+    const centerOffset = Math.floor(containerHeight / 2 - lineHeight / 2); // 居中偏移量
 
-  // 更新歌词高亮和滚动位置
+    // 设置 scrollTop 使第一行歌词居中
+    this.setData({
+      scrollTop: centerOffset,
+    });
+  },
+  // 更新歌词高亮
   updateLyricsHighlight() {
     const currentTime = this.data.currentTime;
     let highlightIndex = this.data.lyrics.findIndex((item) => item.time <= currentTime && (this.data.lyrics[this.data.lyrics.indexOf(item) + 1] ? this.data.lyrics[this.data.lyrics.indexOf(item) + 1].time > currentTime : true));
 
     if (highlightIndex !== -1) {
-      const scrollTop = highlightIndex * 30; // 每行歌词的高度为30px（可根据需要调整）
       this.setData({
         highlightIndex,
-        scrollTop,
+      });
+
+      // 计算滚动位置，确保高亮歌词居中
+      const lineHeight = 30; // 每行歌词的高度（根据需要调整）
+      const containerHeight = 150; // 假设歌词容器的高度为 300（根据需要调整）
+      const centerOffset = Math.floor(containerHeight / 2 - lineHeight / 2); // 居中偏移量
+
+      // 计算 scrollTop 使高亮歌词居中
+      const scrollTop = Math.max(0, highlightIndex * lineHeight - centerOffset);
+
+      this.setData({
+        scrollTop, // 设置 scrollTop
       });
     }
   },
+
+  // 切换播放和暂停状态
+  togglePlayback() {
+    if (this.data.isPaused) {
+      this.setData({ isPaused: false });
+      this.startLyricsScroll(); // 继续播放
+    } else {
+      this.setData({ isPaused: true });
+      clearInterval(this.timer); // 暂停播放
+    }
+  },
+
 
   /**
    * 生命周期函数--监听页面初次渲染完成

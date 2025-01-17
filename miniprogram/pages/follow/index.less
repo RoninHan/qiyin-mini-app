@@ -10,8 +10,16 @@ page {
 }
 
 .lyrics-container {
-  height: 80vh;
+  height: 150px;
   /* 滚动区域的高度 */
+  width: 100%;
+}
+
+.rich-text-content {
+  width: 100%;
+  /* rich-text 宽度设置为 100% */
+  white-space: normal;
+  /* 保证文本正常换行 */
 }
 
 .lyric-line {
@@ -26,7 +34,15 @@ page {
 }
 
 .highlight {
-  color: #ffa500;
+  // color: #ffa500;
   /* 高亮当前歌词 */
   font-weight: bold;
+  font-size: 20px;
+}
+
+
+.superscript {
+  font-size: 12px;
+  vertical-align: super;
+  /* 上标效果 */
 }
