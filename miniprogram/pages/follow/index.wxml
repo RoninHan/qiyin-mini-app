@@ -1,15 +1,15 @@
 <!--pages/follow/index.wxml-->
 <navigation-bar title="彈唱跟隨" back="{{true}}" color="white" background="#000"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view style="width: 95%;margin:0 auto;">
-    <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
-  </view>
 
-  <view class="row items-center" style="justify-content: space-around;margin-top: 15px;">
-    <view style="padding-left:15px;padding-right: 15px;">
-      <image src="/public/testalbum.png" style="width: 80px;height: 80px;" />
-    </view>
-    <view style="flex:1;height: 100%;">
+<view style="width: 95%;margin:0 auto;">
+  <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
+</view>
+
+<view class="row items-center" style="justify-content: space-around;margin-top: 15px;">
+  <view style="padding-left:15px;padding-right: 15px;">
+    <image src="/public/testalbum.png" style="width: 80px;height: 80px;" />
+  </view>
+  <view style="flex:1;height: 100%;">
     <view class="col justify-center">
       <view class="text-white">
         旅行的意義
@@ -18,10 +18,16 @@
         4:19
       </view>
     </view>
-      
-    </view>
-    <view style="color:#FFBD5A;padding-left:15px;padding-right: 15px;font-weight: bold;">D调</view>
 
-    
   </view>
-</scroll-view>
+  <view style="color:#FFBD5A;padding-left:15px;padding-right: 15px;font-weight: bold;">D调</view>
+
+
+</view>
+<view class="container-follow">
+  <scroll-view class="lyrics-container" scroll-y="true" scroll-with-animation scroll-top="{{scrollTop}}">
+    <view wx:for="{{lyrics}}" wx:key="index" class="lyric-line" data-index="{{index}}">
+      <text class="lyric-text {{item.highlight ? 'highlight' : ''}}">{{item.text}}</text>
+    </view>
+  </scroll-view>
+</view>
