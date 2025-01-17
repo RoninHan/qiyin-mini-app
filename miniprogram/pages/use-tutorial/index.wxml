@@ -1,0 +1,5 @@
+<!--pages/use-tutorial/index.wxml-->
+<navigation-bar title="使用教程" back="{{true}}" color="white" background="#000"></navigation-bar>
+<view style="padding: 20px;">
+  <text class="text-white">這是一款用于实时数据传输和直播的轻量化工具，支持高效、低延迟的数据处理。它适用于实时音视频流、多媒体直播以及多种场景的数据同步。</text>
+</view>

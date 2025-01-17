@@ -1,0 +1,10 @@
+<!--pages/my-download/index.wxml-->
+<navigation-bar title="我的下載" back="{{true}}" color="white" background="#000"></navigation-bar>
+<view class="song-list">
+  <block wx:for="{{songs}}" wx:key="index">
+    <view class="song-item">
+      <text class="song-title">{{item.name}}</text>
+      <button class="delete-button" data-index="{{index}}" bindtap="deleteSong">删除</button>
+    </view>
+  </block>
+</view>

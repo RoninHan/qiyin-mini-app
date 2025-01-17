@@ -1,0 +1,14 @@
+<!--pages/clear-cache/index.wxml-->
+<navigation-bar title="清理緩存" back="{{true}}" color="white" background="#000"></navigation-bar>
+<view>
+  <view class="cache-list">
+    <view class="cache-item">
+        <view class="cache-title">設備緩存</view>
+      <button class="delete-button" data-index="{{index}}" bindtap="deleteSong">清理</button>
+    </view>
+    <view class="cache-item">
+      <text class="cache-title">歌詞緩存</text>
+      <button class="delete-button" data-index="{{index}}" bindtap="deleteSong">清理</button>
+    </view>
+  </view>
+</view>

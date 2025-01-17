@@ -1,0 +1,15 @@
+<!--components/drop-menu/drop-menu.wxml-->
+<view class="dropdown-container">
+  <view class="dropdown" bindtap="toggleDropdown">
+    <view class="dropdown-left">
+      <image src="/public/phone.svg" style="width:21px;height:21px;" />
+      <text>{{selectedItem.text}}</text>
+    </view>
+    
+    <image class="dropdown-icon" src="/public/downarrow.svg"/>
+  </view>
+  
+  <view wx:if="{{isDropdownOpen}}" class="dropdown-menu">
+    <view class="dropdown-item" wx:for="{{option}}" bindtap="selectItem" data-item="{{item}}">{{item.text}}</view>
+  </view>
+</view>

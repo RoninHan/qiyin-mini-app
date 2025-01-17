@@ -1,0 +1,125 @@
+/* pages/song/song.wxss */
+page{
+  background-color: black;
+}
+
+.container-song {
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollarea {
+  flex: 1;
+  overflow-y: hidden;
+  background-color: black;
+  width: 100%;
+}
+
+.search-bar {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  outline: none;
+}
+
+.filter-buttons {
+  .btn-top{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap:10px;
+  }
+  .btn-bottom{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap:10px;
+    margin-top:10px;
+  }
+}
+
+.filter-btn {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.filter-btn.active {
+  background-color: #ffa500;
+}
+
+.ranking-tabs {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+  margin-top: 15px;
+}
+
+.tab {
+  margin-right: 20px;
+  font-size: 14px;
+  color: #fff;
+  padding: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background-color: #FFBD5A;
+}
+
+.song-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.song-title {
+  font-size: 14px;
+  color: #fff;
+}
+
+.song-artist {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.star-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.van-search{
+  --search-padding:10px 0;
+}
+.van-search__content{
+  --search-background-color:#2C2C2C;
+}

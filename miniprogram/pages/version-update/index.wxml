@@ -1,0 +1,17 @@
+<!--pages/version-update/index.wxml-->
+<navigation-bar title="版本更新" back="{{true}}" color="white" background="#000"></navigation-bar>
+
+<view>
+  <view class="version-list">
+    <view class="version-item">
+      <view>
+        <view class="version-title">硬件版本號</view>
+        <view class="version-title" style="font-size: 12px;">v1.1.4</view>
+      </view>
+      <button class="delete-button" data-index="{{index}}" bindtap="deleteSong">更新</button>
+    </view>
+    <view class="version-item">
+      <text class="version-title">設備信息</text>
+    </view>
+</view>
+</view>

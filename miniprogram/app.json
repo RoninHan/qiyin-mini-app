@@ -1,0 +1,47 @@
+{
+  "tabBar": {
+    "custom": true,
+    "backgroundColor": "#ffa500",
+    "list": [
+      {
+        "pagePath": "pages/index/index"
+      },
+      {
+        "pagePath": "pages/song/song"
+      },
+      {
+        "pagePath": "pages/ai/ai"
+      },
+      {
+        "pagePath": "pages/me/me"
+      }
+    ]
+  },
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/song/song",
+    "pages/ai/ai",
+    "pages/me/me",
+    "pages/my-download/index",
+    "pages/version-update/index",
+    "pages/use-tutorial/index",
+    "pages/clear-cache/index",
+    "pages/follow/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "rendererOptions": {
+    "skyline": {
+      "defaultDisplayBlock": true,
+      "disableABTest": true,
+      "sdkVersionBegin": "3.0.0",
+      "sdkVersionEnd": "15.255.255"
+    }
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

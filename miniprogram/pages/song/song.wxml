@@ -1,0 +1,57 @@
+<!--pages/song/song.wxml-->
+<navigation-bar title="歌曲" back="{{false}}" color="white" background="#000"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container-song">
+    <!-- 搜索框 -->
+    <van-search value="{{ value }}" bindinput="onSearchInput"  placeholder="搜索吉他曲谱" background="#000" shape="round" />
+
+    <!-- 分类按钮 -->
+    <view class="filter-buttons">
+      <view class="btn-top">
+        <button class="filter-btn">
+          <view>MANDARIN</view>
+          <view>国语</view>
+        </button>
+        <button class="filter-btn">
+          <view>CANTONESE</view>
+          <view>粤语</view>
+        </button>
+        <button class="filter-btn">
+          <view>ENGLISH</view>
+          <view>英语</view>
+        </button>
+      </view>
+
+      <view class="btn-bottom">
+        <button class="filter-btn">
+          <view>OTHER</view>
+          <view>其他</view>
+        </button>
+        <button class="filter-btn active">
+          <view>ALL</view>
+          <view>全部</view>
+        </button>
+      </view>
+
+    </view>
+
+    <!-- 榜单切换 -->
+    <view class="ranking-tabs">
+      <text class="tab {{selectedTab === 'hot' ? 'active' : ''}}" bindtap="onTabSwitch" data-tab="hot">热门榜</text>
+      <text class="tab {{selectedTab === 'latest' ? 'active' : ''}}" bindtap="onTabSwitch" data-tab="latest">最新榜</text>
+    </view>
+
+    <!-- 歌曲列表 -->
+    <view class="song-list">
+      <block wx:for="{{songs}}" wx:key="id">
+        <view class="song-item" bind-id="{{item.id}}" bind:tap="gotofollow">
+          <view>
+            <view class="song-title">{{item.title}}</view>
+            <view class="song-artist">{{item.artist}}</view>
+          </view>
+          <image class="star-icon" src="{{item.isFavorite ? '/assets/star-filled.png' : '/assets/star-empty.png'}}" data-id="{{item.id}}" bindtap="toggleFavorite" />
+        </view>
+      </block>
+    </view>
+  </view>
+</scroll-view>

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "drop-menu":"/components/drop-menu/drop-menu"
+  }
+}

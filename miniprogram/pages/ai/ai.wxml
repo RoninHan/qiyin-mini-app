@@ -1,0 +1,94 @@
+<!--pages/ai/ai.wxml-->
+<navigation-bar title="AI寫歌" back="{{false}}" color="white" background="#000"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view style="width: 95%;margin:0 auto;">
+    <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
+  </view>
+  <!-- 分类按钮 -->
+  <view class="filter-buttons">
+    <button class="filter-btn">
+      <view class="text-bold">MANDARIN</view>
+      <view>流行</view>
+    </button>
+    <button class="filter-btn">
+      <view class="text-bold">CANTONESE</view>
+      <view>电子</view>
+    </button>
+    <button class="filter-btn">
+      <view class="text-bold">ENGLISH</view>
+      <view>民谣</view>
+    </button>
+  </view>
+
+  <!-- 输入框 -->
+  <view class="input-container">
+    <view class="text-white tip">輸入提示詞</view>
+    <view class="dirver"></view>
+
+    <view class="body">
+      描述想要寫的歌詞
+    </view>
+    <view class="dirver"></view>
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="action-btn ">确认</button>
+      <button class="action-btn ">修改</button>
+    </view>
+  </view>
+
+
+
+  <!-- 播放器 -->
+  <view class="player-container relative">
+    <!-- 波形 -->
+    <image src="/public/waves.svg" style="height: 150px;" />
+    <!-- 播放按钮 -->
+    <view class="play-button absolute">
+      <view class="play-icon">
+        <image src="/public/aimusic.svg" />
+      </view>
+
+    </view>
+
+
+
+
+    <!-- 状态文字 -->
+    <view class="relative w-full">
+      <view class="w-full" style="display: flex;justify-content: center;">
+        <text class="status-text">
+          AI正在生成
+        </text>
+      </view>
+
+      <view class="absolute" style="display: flex;gap:10px; right: 0;bottom: 3px;">
+        <image src="/public/ai/share.svg" style="width:15px;height:15px;" />
+        <image src="/public/ai/love.svg" style="width:15px;height:15px;" />
+      </view>
+    </view>
+
+    <!-- 播放控制条 -->
+    <view class="progress-container">
+      <text class="time">00:00</text>
+      <slider class="progress-bar" value="0" min="0" max="247" />
+      <text class="time">2:47</text>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="control-buttons">
+      <view style="width: 80px;">
+      </view>
+      <view style="width:150px;display: flex;gap:25px;justify-content: center;">
+        <image src="/public/music/left.svg" class="control-icon" />
+        <image src="/public/music/pause.svg" class="control-icon" />
+        <image src="/public/music/right.svg" class="control-icon" />
+      </view>
+      <view style="width: 80px;display: flex;justify-content: flex-end;gap:20px;">
+        <image src="/public/music/equalizer.svg" class="control-icon" />
+        <image src="/public/music/plus.svg" class="control-icon" />
+      </view>
+
+
+    </view>
+  </view>
+</scroll-view>
