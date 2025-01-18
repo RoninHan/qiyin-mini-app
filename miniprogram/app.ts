@@ -23,6 +23,25 @@ App<IAppOption>({
       success: (res) => {
         console.log(res)
         this.globalData.device_id = res.data.data.device_id
+
+        wx.createBLEConnection({
+          deviceId:res.data.data.device_id,
+          success:(res)=>{
+            wx.notifyBLECharacteristicValueChange({
+              state: true,
+              deviceId:res.data.data.device_id,
+              serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
+              characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
+              success(res) {
+                console.log('notifyBLECharacteristicValueChange success', res.errMsg)
+              },
+              fail:(e)=>{
+                console.log(e)
+              }
+            })
+          }
+        })
+        
       }
     })
   },

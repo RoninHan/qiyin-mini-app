@@ -1,4 +1,5 @@
 // pages/follow/index.ts
+const app = getApp<IAppOption>()
 Page({
 
   /**
@@ -11,21 +12,6 @@ Page({
       { text: '銷量排序', value: 2 },
     ],
     value: 0,
-    // lyrics: [
-    //   { time: 0, text: '总有些惊奇的际遇', highlight: false },
-    //   { time: 15.6, text: '比方说当我遇见你', highlight: false },
-    //   { time: 20.8, text: '你那双温柔剔透的眼睛', highlight: false },
-    //   { time: 28.6, text: '出现在我梦里', highlight: false },
-    //   { time: 31.2, text: '我的爱就像一片云', highlight: false },
-    //   { time: 36.4, text: '在你的天空无处停', highlight: false },
-    //   { time: 41.6, text: '多渴望化成阵阵的小雨', highlight: false },
-    //   { time: 48.1, text: '滋润你心中的土地', highlight: false },
-    //   { time: 53.3, text: '不管未来会怎么样', highlight: false },
-    //   { time: 58.5, text: '至少我们现在很开心', highlight: false },
-    //   { time: 63.7, text: '不管结局会怎么样', highlight: false },
-    //   { time: 68.9, text: '至少想念的人是你', highlight: false },
-    //   // 继续填写其他歌词...
-    // ],
     lyrics: [
       
       // 继续填写其他歌词...
@@ -79,7 +65,6 @@ Page({
         // console.log(matches)
         matches.forEach((match) => {
           if (match.startsWith('#')) {
-            console.log(match.slice(1)[0])
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
                 { name: 'div', attrs: { class:'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
@@ -252,6 +237,8 @@ Page({
       },
     });
   },
+
+  
 
    hexToBuffer (hex: string){
     const pairs = hex.match(/[\s\S]{1,2}/g) || [];

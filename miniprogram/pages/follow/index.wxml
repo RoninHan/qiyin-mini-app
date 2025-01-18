@@ -1,5 +1,5 @@
 <!--pages/follow/index.wxml-->
-<navigation-bar title="彈唱跟隨" back="{{true}}" color="white" background="#000"></navigation-bar>
+<navigation-bar title="弹跳跟随" back="{{true}}" color="white" background="#000"></navigation-bar>
 
 <view style="width: 95%;margin:0 auto;">
   <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
@@ -33,7 +33,7 @@
   <scroll-view class="lyrics-container" scroll-y="true" scroll-with-animation scroll-top="{{scrollTop}}">
     <view wx:for="{{formattedLyrics}}" wx:key="index" class="lyric-line" data-index="{{index}}">
       <!-- <text class="lyric-text {{index === highlightIndex ? 'highlight' : ''}}">{{item.text}}</text> -->
-      <rich-text class="lyric-text {{index === highlightIndex ? 'highlight' : 'nohighlight'}}" nodes="{{item.text}}"></rich-text>
+      <rich-text class="lyric-text {{index === highlightIndex ? 'highlight' : index === highlightIndex+1?'nexthighlight':'nohighlight'}}" nodes="{{item.text}}"></rich-text>
     </view>
   </scroll-view>
 </view>
