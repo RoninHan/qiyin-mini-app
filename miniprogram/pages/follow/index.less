@@ -10,7 +10,7 @@ page {
 }
 
 .lyrics-container {
-  height: 150px;
+  height: calc( 100vh - 200px );
   /* 滚动区域的高度 */
   width: 100%;
 }
@@ -37,7 +37,52 @@ page {
   // color: #ffa500;
   /* 高亮当前歌词 */
   font-weight: bold;
-  font-size: 20px;
+  color: #fff;
+
+  .superscript {
+    position: absolute;
+    bottom: 30px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+  }
+
+  .notext {
+    width: 30px;
+    height: 30px;
+    background: #FFBD5A;
+    border-radius: 4px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hasbgtext {
+    width: 30px;
+    height: 30px;
+    background: #FFBD5A;
+    border-radius: 4px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.nohighlight {
+  color: #aaa;
+
+  .superscript {
+    display: none;
+  }
+
+  .notext {
+    display: none;
+  }
+  .hasbgtext{
+    background:none;
+  }
 }
 
 

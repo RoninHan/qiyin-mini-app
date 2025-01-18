@@ -44,7 +44,7 @@
     <!-- 歌曲列表 -->
     <view class="song-list">
       <block wx:for="{{songs}}" wx:key="id">
-        <view class="song-item" bind-id="{{item.id}}" bind:tap="gotofollow">
+        <view class="song-item" data-id="{{item.id}}" bind:tap="gotofollow">
           <view>
             <view class="song-title">{{item.name}}</view>
             <view class="song-artist">{{item.singer}}</view>

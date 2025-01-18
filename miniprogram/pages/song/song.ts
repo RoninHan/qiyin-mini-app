@@ -119,7 +119,7 @@ Page({
       url: "https://www.axiarz.com/api/song_type",
       method: "GET",
       success: (res) => {
-        // console.log(res)
+        console.log(res)
         this.setData({
           songTypes: res.data.data
         })

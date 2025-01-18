@@ -27,18 +27,7 @@ Page({
     //   // 继续填写其他歌词...
     // ],
     lyrics: [
-      '[00:00.00]总有些#9惊奇的_6际遇',
-      '[00:15.60]比方说#9当我遇_6见你',
-      '[00:20.80]你那双#9温柔剔_6透的_2眼睛_5',
-      '[00:28.60]出现在_9我梦里',
-      '[00:31.20]我的爱#9就像一_6片云',
-      '[00:36.40]在你的#9天空无_6处停',
-      '[00:41.60]多渴望#9化成阵_6阵的_2小雨',
-      '[00:48.10]滋润#9你心中的_6土地_1',
-      '[00:53.30]不管_1未来_7会怎_2么样',
-      '[00:58.50]至少_9我们现在_6很开心_1',
-      '[01:03.70]不管_1结局_7会怎_2么样',
-      '[01:08.90]至少_9想念的人_9是你_6',
+      
       // 继续填写其他歌词...
     ],
     formattedLyrics: [],
@@ -52,13 +41,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    this.getlyrics(options.id)
     // const id = JSON.parse(decodeURIComponent(options.id));
     // this.startLyricsScroll();
-    this.extractTime(); // 提取时间并存储
-    this.formatLyrics();
-    this.startLyricsScroll();
-
-    this.scrollToFirstLine();
+    
   },
   // 提取歌词中的时间戳并为每一行设置 time 属性
   extractTime() {
@@ -96,15 +82,15 @@ Page({
             console.log(match.slice(1)[0])
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
-                { name: 'div', attrs: { style: 'position: absolute;bottom:30px;width:30px;height:30px;text-align: center;' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
-                { name: 'div', attrs: { style: 'width:30px;height:30px;background:#FFBD5A;border-radius:4px;color:#fff;display:flex;align-items: center;justify-content: center;' }, children: [{ type: 'text', text: match.slice(1)[1] }] }
+                { name: 'div', attrs: { class:'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
+                { name: 'div', attrs: { class:'hasbgtext' }, children: [{ type: 'text', text: match.slice(1)[1] }] }
               ]
             });
           } else if (match.startsWith('_')) {
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
-                { name: 'div', attrs: { style: 'position: absolute;bottom:30px;width:30px;height:30px;text-align: center;' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
-                { name: 'div', attrs: { style: 'width:30px;height:30px;background:#FFBD5A;border-radius:4px;color:#fff;display:flex;align-items: center;justify-content: center;' }, children: [{ type: 'text', text: ' ' }] }
+                { name: 'div', attrs: { class:'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
+                { name: 'div', attrs: { class:'notext' }, children: [{ type: 'text', text: ' ' }] }
               ]
             });
           } else {
@@ -117,7 +103,6 @@ Page({
 
       return line
     });
-    console.log(formatted)
     this.setData({
       formattedLyrics: formatted,
     });
@@ -156,17 +141,51 @@ Page({
 
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
         if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration && (word.includes('#') || word.includes('_'))) {
-          this.setData({ isPaused: true }); // 如果遇到包含 '#' 或 '_' 的词，暂停播放
+          // 提取 # 或 _ 后面的字
+          // 检查是否遇到 '#' 或 '_'
+        const hashMatch = word.match(/#(\d)/);  // 匹配 # 后的数字
+        const underscoreMatch = word.match(/_(\d)/);  // 匹配 _ 后的数字
+
+        if (hashMatch) {
+          // 遇到 # 后暂停，并获取 # 后的数字
+          const hashNumber = hashMatch[1];
+          console.log(`遇到 # 后面的数字是: ${hashNumber}`);
+
+          // 暂停播放
+          this.setData({ 
+            isPaused: true, 
+          });
+
+          this.send(hashNumber)
           clearInterval(this.timer); // 清除定时器
-          console.log(timeElapsed)
-          console.log("暂停播放")
           break; // 退出循环
+        }
+
+        if (underscoreMatch) {
+          // 遇到 _ 且已遇到过 #
+          const underscoreNumber = underscoreMatch[1];
+          console.log(`遇到 _ 后面的数字是: ${underscoreNumber}`);
+          
+          // 执行继续播放逻辑
+          this.setData({ 
+            isPaused: false,  // 继续播放
+          });
+          this.send(underscoreNumber)
+          clearInterval(this.timer); // 清除定时器
+          break; // 退出循环
+        }
+
+          // this.setData({ isPaused: true }); // 如果遇到包含 '#' 或 '_' 的词，暂停播放
+          // clearInterval(this.timer); // 清除定时器
+          // console.log(timeElapsed)
+          // console.log("暂停播放")
+          // break; // 退出循环
         }
       }
 
       // 更新歌词高亮和滚动位置
       this.updateLyricsHighlight();
-    }, 1000);
+    }, 500);
   },
   // 滚动到第一行歌词
   scrollToFirstLine() {
@@ -212,6 +231,75 @@ Page({
       this.setData({ isPaused: true });
       clearInterval(this.timer); // 暂停播放
     }
+  },
+
+  send(str: string) {
+    let device_id= app.globalData.device_id
+    if (!device_id) {
+      console.error("error:require deviceid");
+      return;
+    }
+
+    let hexString = this.stringToHex(str);
+    let sendBuf = this.hexToBuffer(hexString);
+    wx.writeBLECharacteristicValue({
+      deviceId:device_id,
+      serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
+      characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
+      value: sendBuf,
+      success(res) {
+        console.log("writeBLECharacteristicValue success", res.errMsg);
+      },
+    });
+  },
+
+   hexToBuffer (hex: string){
+    const pairs = hex.match(/[\s\S]{1,2}/g) || [];
+    const decimalArray = pairs.map((pair) => parseInt(pair, 16));
+    const arr = new Uint8Array(decimalArray.length);
+    for (let i = 0; i < decimalArray.length; i++) {
+      arr[i] = decimalArray[i];
+    }
+    return arr.buffer;
+  },
+
+   ab2hex (buffer: ArrayBuffer){
+    let hexArr = Array.prototype.map.call(new Uint8Array(buffer), function (bit) {
+      return ("00" + bit.toString(16)).slice(-2);
+    });
+    return hexArr.join("");
+  },
+
+   stringToHex(str: string) {
+    return str
+      .split("")
+      .map((char) => char.charCodeAt(0).toString(16).padStart(2, "0"))
+      .join("");
+  },
+
+  getlyrics(id){
+    wx.request({
+      url:'https://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/'+id,
+      method:'GET',
+      success:(res)=>{
+        this.lyricsToArray(res.data.data.lyric);
+
+        setTimeout(() => {
+          this.extractTime(); // 提取时间并存储
+          this.formatLyrics();
+          this.startLyricsScroll();
+
+          this.scrollToFirstLine();
+        }, 100);
+        
+      }
+    })
+  },
+  lyricsToArray(lyrics:string){
+    let lyricsArray = lyrics.split("\n");
+    this.setData({
+      lyrics:lyricsArray
+    })
   },
 
 
