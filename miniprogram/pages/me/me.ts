@@ -8,7 +8,11 @@ Page({
     nickname: '喵喵喵',
     description: '纯粹热爱音乐！',
   },
-
+  goToFirend(){
+    wx.navigateTo({
+      url:"/pages/ranking/index"
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */

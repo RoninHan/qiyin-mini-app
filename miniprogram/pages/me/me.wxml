@@ -17,7 +17,7 @@
       <view class="feature-title">Creation</view>
       <view class="feature-subtitle">创作</view>
     </view>
-    <view class="feature-item">
+    <view class="feature-item" bind:tap="goToFirend">
       <view class="feature-title">Friends</view>
       <view class="feature-subtitle">好友</view>
     </view>

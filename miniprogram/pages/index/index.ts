@@ -15,9 +15,46 @@ Page({
     toneArray: ['1', '2', '3', '4'],
     toneValue:0,
     rateArray: ['1', '2', '3', '4'],
-    rateValue:0
+    rateValue:0,
+    toneShow: false,
+    rateShow: false
   },
   onShow(){
     this.getTabBar().setData({ active: 0 })
+  },
+  
+  handleToneShow(){
+    this.setData({
+      toneShow:true
+    })
+    this.getTabBar().setData({
+      showTabBar:false
+    })
+  },
+  onToneClose(){
+    this.setData({
+      toneShow:false
+    })
+    this.getTabBar().setData({
+      showTabBar:true
+    })
+  },
+
+  handleRateShow(){
+    this.setData({
+      rateShow:true
+    })
+    this.getTabBar().setData({
+      showTabBar:false
+    })
+  },
+  onRateClose(){
+    this.setData({
+      rateShow:false
+    })
+    this.getTabBar().setData({
+      showTabBar:true
+    })
   }
+
 })

@@ -57,7 +57,7 @@ page {
   justify-content: center;
   background-color: #2C2C2C; /* 深灰色背景 */
   border-radius: 10px;
-  height: 80px;
+  padding: 15px;
   margin-bottom: 10px;
   text-align: center;
 
@@ -194,3 +194,54 @@ page {
   font-weight: bold;
 }
 
+picker-view .btns {
+  width: 100%;
+  height: 100rpx;
+  color: #FFBD5A;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  background-color: #000;
+}
+
+picker-view .btns view {
+  width: 20%;
+  text-align: center;
+  font-size: 32rpx;
+}
+
+picker-view {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 0;
+  border-radius: 30rpx 30rpx 0 0;
+  z-index: 999;
+  color: #fff;
+  // background: linear-gradient(rgba(32,33,42,0.8),rgba(32,33,42,0.8),rgba(32,33,42,0.8),rgba(32,33,42,0.8));
+}
+// .bg-black-picker{
+
+//   background-color: black;
+//   opacity: 0;
+//   background-image: linear-gradient(rgba(32,33,42,0.8),rgba(32,33,42,0.8),rgba(32,33,42,0.8),rgba(32,33,42,0.8))
+// }
+
+// 添加弹出的过渡动画
+picker-view.show {
+  height: 36%;
+  transition: all 0.4s;
+}
+
+picker-view.hide {
+  height: 0%;
+  transition: all 0.4s;
+}

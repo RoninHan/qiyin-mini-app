@@ -2,7 +2,6 @@
   "usingComponents": {
     "navigation-bar": "/components/navigation-bar/navigation-bar",
     "drop-menu":"/components/drop-menu/drop-menu",
-    "van-popup": "@vant/weapp/popup/index",
-    "van-picker": "@vant/weapp/picker/index"
+    "van-progress": "@vant/weapp/progress/index"
   }
 }

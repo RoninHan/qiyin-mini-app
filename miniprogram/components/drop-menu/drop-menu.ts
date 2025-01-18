@@ -5,15 +5,20 @@ Component({
    * 组件的属性列表
    */
   properties: {
-    option:[],
-    value: '設備連接',
+    option: {
+      type: Array,
+      value: [],
+    },
+    value: {
+      type: Number,
+      value: 0,
+    },
   },
 
   /**
    * 组件的初始数据
    */
   data: {
-    selectedItem:{},
     isDropdownOpen: false,
   },
 
@@ -32,8 +37,14 @@ Component({
     selectItem(event) {
       const selectedItem = event.currentTarget.dataset.item;
       this.setData({
-        selectedItem,
-        isDropdownOpen: false
+        value: selectedItem.value,
+        isDropdownOpen: false, // 选择后关闭下拉菜单
+      });
+
+      // 触发父组件的事件，通知选中的项
+      this.triggerEvent('change', {
+        value: selectedItem.value,
+        label: selectedItem.label,
       });
     }
   }

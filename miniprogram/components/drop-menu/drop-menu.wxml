@@ -3,7 +3,7 @@
   <view class="dropdown" bindtap="toggleDropdown">
     <view class="dropdown-left">
       <image src="/public/phone.svg" style="width:21px;height:21px;" />
-      <text>{{selectedItem.text}}</text>
+      <text>{{option[value].text}}</text>
     </view>
     
     <image class="dropdown-icon" src="/public/downarrow.svg"/>

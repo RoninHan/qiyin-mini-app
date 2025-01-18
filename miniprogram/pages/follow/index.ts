@@ -219,10 +219,40 @@ Page({
   },
 
   send(str: string) {
+    let that = this;
     let device_id= app.globalData.device_id
     if (!device_id) {
       console.error("error:require deviceid");
       return;
+    }
+
+    function hexStringToUint8Array(hexString: string): Uint8Array {
+      // 去除可能存在的空格和换行符
+      hexString = hexString.replace(/\s+/g, '');
+  
+      // 检查字符串长度是否为偶数
+      if (hexString.length % 2 !== 0) {
+        throw new Error('Invalid hex string length');
+      }
+  
+      // 创建 Uint8Array
+      const uint8Array = new Uint8Array(hexString.length / 2);
+  
+      // 遍历字符串，每两个字符转换为一个字节
+      for (let i = 0; i < hexString.length; i += 2) {
+        uint8Array[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
+      }
+  
+      return uint8Array;
+    }
+    function ab2hex(buffer) {
+      let hexArr = Array.prototype.map.call(
+        new Uint8Array(buffer),
+        function (bit) {
+          return ('00' + bit.toString(16)).slice(-2)
+        }
+      )
+      return hexArr.join('');
     }
 
     let hexString = this.stringToHex(str);
@@ -234,6 +264,28 @@ Page({
       value: sendBuf,
       success(res) {
         console.log("writeBLECharacteristicValue success", res.errMsg);
+        wx.onBLECharacteristicValueChange(function (res) {
+          let u8Buf = hexStringToUint8Array(ab2hex(res.value))
+          switch (u8Buf[0]) {
+            case 0x00:
+              console.log("bat" + u8Buf[1])
+              break;
+            case 0x10:
+              console.log(
+                "vol" + u8Buf[1] + "," +
+                "yindao" + u8Buf[2] + "," +
+                "play_speed" + u8Buf[3] + "," +
+                "guji_style" + u8Buf[4] + "," +
+                "bo1_style" + u8Buf[5] + "," +
+                "bo2_style" + u8Buf[6] + "," +
+                "rgb_mode" + u8Buf[7]
+              )
+              that.togglePlayback()
+              break;
+            default:
+              break;
+          }
+        })
       },
     });
   },

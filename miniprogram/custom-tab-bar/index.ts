@@ -23,7 +23,8 @@ Component({
 				url: '/pages/me/me'
       }
       
-		]
+		],
+		showTabBar:true
 	},
 
 	methods: {

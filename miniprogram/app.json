@@ -27,7 +27,8 @@
     "pages/version-update/index",
     "pages/use-tutorial/index",
     "pages/clear-cache/index",
-    "pages/follow/index"
+    "pages/follow/index",
+    "pages/ranking/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

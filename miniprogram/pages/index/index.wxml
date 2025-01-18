@@ -7,73 +7,95 @@
 
   <view class="container-index">
 
-  <view class="row gap-1">
-  <!-- 第一列 -->
-  <view class="column">
-    <picker bindchange="bindPickerChange" value="{{toneValue}}" range="{{toneArray}}"  class="btn relative w-full">
-      <image class="icon absolute top-2 left-2" src="/public/guitar/pulse.svg" />
-      <view class="text-bold text-white">Tone</view>
-      <view class="subtext">音调</view>
-    </picker>
-    <button class="btn relative w-full">
-      <image class="icon absolute top-2 left-2" src="/public/guitar/settings.svg" />
-      <text class="text-bold">Chord Mapping</text>
-      <text class="subtext">和弦映射</text>
-    </button>
-    <picker bindchange="bindPickerChange" value="{{rateValue}}" range="{{rateArray}}"  class="btn relative w-full">
-      <image class="icon absolute top-2 left-2" src="/public/guitar/arrow.svg" />
-      <view class="text-bold text-white">Rate</view>
-      <view class="subtext">速率</view>
-    </picker>
-  </view>
-
-  <!-- 中间显示区 -->
-  <view class="center">
-    <image class="device" src="/public/guitarshow.svg" />
-    <view class="status">
-      <view class="status-item">
-        <text>电量</text>
-        <view class="percent">
-          <view class="orange-bg">
-          </view>
-          <view class="percent-text" >45%</view>
-        </view>
+    <view class="row gap-1">
+      <!-- 第一列 -->
+      <view class="column">
+        <button class="btn relative w-full" bind:tap="handleToneShow">
+          <image class="icon absolute top-2 left-2" src="/public/guitar/pulse.svg" />
+          <text class="text-bold text-white">Tone</text>
+          <text class="subtext">音调</text>
+        </button>
+        <button class="btn relative w-full">
+          <image class="icon absolute top-2 left-2" src="/public/guitar/settings.svg" />
+          <text class="text-bold">Chord Mapping</text>
+          <text class="subtext">和弦映射</text>
+        </button>
+        <button class="btn relative w-full" bind:tap="handleRateShow">
+          <image class="icon absolute top-2 left-2" src="/public/guitar/arrow.svg" />
+          <text class="text-bold text-white">Rate</text>
+          <text class="subtext">速率</text>
+        </button>
       </view>
-      <view class="status-item">
-        <text>音量</text>
-        <view class="percent">
-          <view class="orange-bg">
+
+      <!-- 中间显示区 -->
+      <view class="center">
+        <image class="device" src="/public/guitarshow.svg" />
+        <view class="status">
+          <view class="status-item">
+            <text>电量</text>
+            <view class="percent">
+              <view class="orange-bg">
+              </view>
+              <view class="percent-text">45%</view>
+            </view>
           </view>
-          <view class="percent-text"  >50%</view>
+          <view class="status-item">
+            <text>音量</text>
+            <view class="percent">
+              <view class="orange-bg">
+              </view>
+              <view class="percent-text">50%</view>
+            </view>
+
+          </view>
         </view>
-        
       </view>
     </view>
-  </view>
-  </view>
-  
 
-  <!-- 第二列 -->
-  <view class="row gap-1">
-    <button class="btn w-full h-20">
-      <text class="text-bold">Chord Patterns</text>
-      <text class="subtext">和弦样式</text>
-    </button>
-    <button class="btn w-full h-20">
-      <text style="line-height: 1em;" class="text-bold">Drum Machine Patterns</text>
-      <text class="subtext">鼓机样式</text>
-    </button>
-    
+
+    <!-- 第二列 -->
+    <view class="row gap-1">
+      <button class="btn w-full h-20">
+        <text class="text-bold">Chord Patterns</text>
+        <text class="subtext">和弦样式</text>
+      </button>
+      <button class="btn w-full h-20">
+        <text style="line-height: 1em;" class="text-bold">Drum Machine Patterns</text>
+        <text class="subtext">鼓机样式</text>
+      </button>
+
+    </view>
+    <view class="row gap-1">
+      <button class="btn w-full">
+        <text class="text-bold">Musical</text>
+        <text class="subtext">乐器更换</text>
+      </button>
+      <button class="btn w-full">
+        <text class="text-bold">Light</text>
+        <text class="subtext">灯光</text>
+      </button>
+    </view>
   </view>
-  <view class="row gap-1">
-    <button class="btn w-full">
-      <text class="text-bold">Musical</text>
-      <text class="subtext">乐器更换</text>
-    </button>
-    <button class="btn w-full">
-      <text class="text-bold">Light</text>
-      <text class="subtext">灯光</text>
-    </button></view>
-</view>
-  
+
 </scroll-view>
+
+<picker-view 	mask-style="background-color:#000;opacity: 0;" indicator-style="height: 50px;border-top:1px solid#FFBD5A;border-bottom:1px solid#FFBD5A;"  value="{{toneValue}}" bindchange="bindChange" class="{{ toneShow ? 'show' : '' }}">
+  <view class='btns'>
+    <view bindtap="onToneClose">取消</view>
+    <view bindtap="getValue">确认</view>
+  </view>
+  <picker-view-column>
+    <view wx:for="{{toneArray}}" wx:key="{{item}}" style="line-height: 50px; text-align: center;">{{item}}</view>
+  </picker-view-column>
+
+</picker-view>
+
+<picker-view mask-style="background-color:#000;opacity: 0;" indicator-style="height: 50px;border-top:1px solid#FFBD5A;border-bottom:1px solid#FFBD5A;"  value="{{rateValue}}" bindchange="bindChange" class="{{ rateShow ? 'show' : '' }}">
+  <view class='btns'>
+    <view bindtap="onRateClose">取消</view>
+    <view bindtap="getValue">确认</view>
+  </view>
+  <picker-view-column>
+    <view wx:for="{{rateArray}}" wx:key="{{item}}" style="line-height: 50px; text-align: center;">{{item}}</view>
+  </picker-view-column>
+</picker-view>

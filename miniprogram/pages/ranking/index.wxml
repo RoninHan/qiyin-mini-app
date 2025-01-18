@@ -1,0 +1,46 @@
+<!--pages/ranking/index.wxml-->
+<!-- pages/ranking/ranking.wxml -->
+<navigation-bar title="评分" back="{{true}}" color="white" background="#000"></navigation-bar>
+
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view style="width: 95%;margin:0 auto;">
+    <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
+  </view>
+
+  <view>
+	<text>Level 3</text>
+	<van-progress percentage="50"  stroke-width="8" color="#FFBD5A" show-pivot="{{false}}" />
+  </view>
+  <!-- Circle Progress Bar -->
+  <view class="progress-container">
+    <view class="circle">
+      <view class="percentage">{{progress}}%</view>
+      <view class="info">
+        <view class="rank">{{friendRank}} 好友排名</view>
+        <view class="global-rank">{{globalRank}} 社区排名</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Friend and Global Rankings -->
+  <view class="ranking-tabs">
+    <button bindtap="toggleTab" data-type="friend">好友榜</button>
+    <button bindtap="toggleTab" data-type="global">全球榜</button>
+  </view>
+
+  <!-- Rankings Display -->
+  <view class="rankings">
+    <view wx:for="{{rankings}}" wx:key="index" class="rank-item">
+      <view class="user-profile">
+        <image class="avatar" src="{{item.avatar}}" />
+        <view class="name">{{item.name}}</view>
+      </view>
+      <view class="score">{{item.score}}</view>
+    </view>
+  </view>
+
+  <!-- Footer Info -->
+  <view class="footer">
+    <view>{{footerInfo}}</view>
+  </view>
+</scroll-view>
