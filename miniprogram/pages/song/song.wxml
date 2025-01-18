@@ -3,23 +3,23 @@
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container-song">
     <!-- 搜索框 -->
-    <van-search value="{{ value }}" bindinput="onSearchInput"  placeholder="搜索吉他曲谱" background="#000" shape="round" />
+    <van-search value="{{ value }}" bindinput="onSearchInput" placeholder="搜索吉他曲谱" background="#000" shape="round" />
 
     <!-- 分类按钮 -->
     <view class="filter-buttons">
       <view class="btn-top">
-        <button class="filter-btn">
-          <view>MANDARIN</view>
-          <view>国语</view>
+        <button class="filter-btn" wx:for="{{songTypes}}" wx:key="{{item.id}}" data-id="{{item.id}}">
+          <view>{{item.en_name}}</view>
+          <view>{{item.name}}</view>
         </button>
-        <button class="filter-btn">
+        <!-- <button class="filter-btn">
           <view>CANTONESE</view>
           <view>粤语</view>
         </button>
         <button class="filter-btn">
           <view>ENGLISH</view>
           <view>英语</view>
-        </button>
+        </button> -->
       </view>
 
       <view class="btn-bottom">
@@ -46,8 +46,8 @@
       <block wx:for="{{songs}}" wx:key="id">
         <view class="song-item" bind-id="{{item.id}}" bind:tap="gotofollow">
           <view>
-            <view class="song-title">{{item.title}}</view>
-            <view class="song-artist">{{item.artist}}</view>
+            <view class="song-title">{{item.name}}</view>
+            <view class="song-artist">{{item.singer}}</view>
           </view>
           <image class="star-icon" src="{{item.isFavorite ? '/assets/star-filled.png' : '/assets/star-empty.png'}}" data-id="{{item.id}}" bindtap="toggleFavorite" />
         </view>

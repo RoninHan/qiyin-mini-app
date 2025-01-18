@@ -16,6 +16,7 @@ Page({
       { id: 4, title: 'You belong with me', artist: 'Taylor Swift', isFavorite: false },
       { id: 5, title: '体面', artist: '于文文', isFavorite: false },
     ],
+    songTypes: []
   },
 
   /**
@@ -36,7 +37,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    this.getSongType();
+    this.getSongs()
   },
 
   /**
@@ -105,10 +107,36 @@ Page({
     this.setData({ songs });
   },
 
-  gotofollow(e){
+  gotofollow(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url:"/pages/follow/index?id="+id
+      url: "/pages/follow/index?id=" + id
+    })
+  },
+
+  getSongType() {
+    wx.request({
+      url: "https://www.axiarz.com/api/song_type",
+      method: "GET",
+      success: (res) => {
+        // console.log(res)
+        this.setData({
+          songTypes: res.data.data
+        })
+      }
+    })
+  },
+
+  getSongs() {
+    wx.request({
+      url: "https://www.axiarz.com/api/song",
+      method: "GET",
+      success: (res) => {
+        console.log(res)
+        this.setData({
+          songs:res.data.data
+        })
+      }
     })
   }
 })

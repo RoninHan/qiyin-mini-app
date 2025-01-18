@@ -93,16 +93,28 @@ Page({
         // console.log(matches)
         matches.forEach((match) => {
           if (match.startsWith('#')) {
-            console.log(match.slice(1)[1])
-            formattedLine.push({ name: 'span', attrs: { style: 'color: red;' }, children: [{ type: 'text', text: match.slice(1)[1] }] });
+            console.log(match.slice(1)[0])
+            formattedLine.push({
+              name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
+                { name: 'div', attrs: { style: 'position: absolute;bottom:30px;width:30px;height:30px;text-align: center;' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
+                { name: 'div', attrs: { style: 'width:30px;height:30px;background:#FFBD5A;border-radius:4px;color:#fff;display:flex;align-items: center;justify-content: center;' }, children: [{ type: 'text', text: match.slice(1)[1] }] }
+              ]
+            });
           } else if (match.startsWith('_')) {
-            formattedLine.push({ name: 'span', attrs: { style: 'font-size: 12px; vertical-align: super;' }, children: [{ type: 'text', text: " " }] });
+            formattedLine.push({
+              name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
+                { name: 'div', attrs: { style: 'position: absolute;bottom:30px;width:30px;height:30px;text-align: center;' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
+                { name: 'div', attrs: { style: 'width:30px;height:30px;background:#FFBD5A;border-radius:4px;color:#fff;display:flex;align-items: center;justify-content: center;' }, children: [{ type: 'text', text: ' ' }] }
+              ]
+            });
           } else {
             formattedLine.push({ type: 'text', text: match });
           }
         });
       }
-      line.text = [{ name: 'div', children: formattedLine }];
+      line.original = line.text;
+      line.text = [{ name: 'div', attrs: { style: 'display:flex;margin-top:30px;justify-content: center;' }, children: formattedLine }];
+
       return line
     });
     console.log(formatted)
@@ -124,6 +136,33 @@ Page({
       this.setData({
         currentTime: this.data.currentTime + 1,
       });
+
+      // 获取当前歌词行和它的播放时间
+      const currentLyric = this.data.lyrics[this.data.highlightIndex];
+      // console.log(currentLyric)
+      // 获取当前行歌词文本，按空格分割成词
+      const words = currentLyric.original.split(' ');
+
+      // 计算每个词的播放时间，假设每个词的播放时间均匀分配
+      const lineDuration = this.data.lyrics[this.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
+      const wordDuration = lineDuration / words.length; // 每个词的播放时间
+
+      // 遍历当前行的每个词，判断当前时间是否达到该词的播放时间，并检查是否包含 '#' 或 '_'
+      let timeElapsed = 0; // 累计时间，表示已播放的时间
+
+      for (let i = 0; i < words.length; i++) {
+        timeElapsed += wordDuration; // 当前词的播放时间
+        const word = words[i];
+
+        // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
+        if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration && (word.includes('#') || word.includes('_'))) {
+          this.setData({ isPaused: true }); // 如果遇到包含 '#' 或 '_' 的词，暂停播放
+          clearInterval(this.timer); // 清除定时器
+          console.log(timeElapsed)
+          console.log("暂停播放")
+          break; // 退出循环
+        }
+      }
 
       // 更新歌词高亮和滚动位置
       this.updateLyricsHighlight();
