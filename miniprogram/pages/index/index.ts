@@ -2,7 +2,7 @@
 // 获取应用实例
 const app = getApp<IAppOption>()
 
-Component({
+Page({
   data: {
     option: [
       { text: '設備連接', value: 0 },
@@ -12,8 +12,12 @@ Component({
     value: 0,
     battery: 45, // 电量
     volume: 50, // 音量
+    toneArray: ['1', '2', '3', '4'],
+    toneValue:0,
+    rateArray: ['1', '2', '3', '4'],
+    rateValue:0
   },
-  methods: {
-    
-  },
+  onShow(){
+    this.getTabBar().setData({ active: 0 })
+  }
 })

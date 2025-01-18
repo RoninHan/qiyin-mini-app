@@ -27,7 +27,7 @@ Component({
 	},
 
 	methods: {
-		onChange(event) {
+		onChange(event: { detail: string | number; }) {
 			this.setData({ active: event.detail });
 			wx.switchTab({
 				url: this.data.list[event.detail].url

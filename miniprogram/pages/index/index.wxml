@@ -10,21 +10,21 @@
   <view class="row gap-1">
   <!-- 第一列 -->
   <view class="column">
-    <button class="btn relative w-full">
+    <picker bindchange="bindPickerChange" value="{{toneValue}}" range="{{toneArray}}"  class="btn relative w-full">
       <image class="icon absolute top-2 left-2" src="/public/guitar/pulse.svg" />
-      <text class="text-bold">Tone</text>
-      <text class="subtext">音调</text>
-    </button>
+      <view class="text-bold text-white">Tone</view>
+      <view class="subtext">音调</view>
+    </picker>
     <button class="btn relative w-full">
       <image class="icon absolute top-2 left-2" src="/public/guitar/settings.svg" />
       <text class="text-bold">Chord Mapping</text>
       <text class="subtext">和弦映射</text>
     </button>
-    <button class="btn relative w-full">
+    <picker bindchange="bindPickerChange" value="{{rateValue}}" range="{{rateArray}}"  class="btn relative w-full">
       <image class="icon absolute top-2 left-2" src="/public/guitar/arrow.svg" />
-      <text class="text-bold">Rate</text>
-      <text class="subtext">速率</text>
-    </button>
+      <view class="text-bold text-white">Rate</view>
+      <view class="subtext">速率</view>
+    </picker>
   </view>
 
   <!-- 中间显示区 -->
