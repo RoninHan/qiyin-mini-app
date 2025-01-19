@@ -36,7 +36,7 @@
             <view class="percent">
               <view class="orange-bg">
               </view>
-              <view class="percent-text">45%</view>
+              <view class="percent-text">{{battery}}%</view>
             </view>
           </view>
           <view class="status-item">
@@ -44,7 +44,7 @@
             <view class="percent">
               <view class="orange-bg">
               </view>
-              <view class="percent-text">50%</view>
+              <view class="percent-text">{{volume}}%</view>
             </view>
 
           </view>
@@ -79,7 +79,7 @@
 
 </scroll-view>
 
-<picker-view 	mask-style="background-color:#000;opacity: 0;" indicator-style="height: 50px;border-top:1px solid#FFBD5A;border-bottom:1px solid#FFBD5A;"  value="{{toneValue}}" bindchange="bindChange" class="{{ toneShow ? 'show' : '' }}">
+<picker-view mask-style="background-color:#000;opacity: 0;" indicator-style="height: 50px;border-top:1px solid#FFBD5A;border-bottom:1px solid#FFBD5A;" value="{{toneValue}}" bindchange="bindChange" class="{{ toneShow ? 'show' : '' }}">
   <view class='btns'>
     <view bindtap="onToneClose">取消</view>
     <view bindtap="getValue">确认</view>
@@ -90,7 +90,7 @@
 
 </picker-view>
 
-<picker-view mask-style="background-color:#000;opacity: 0;" indicator-style="height: 50px;border-top:1px solid#FFBD5A;border-bottom:1px solid#FFBD5A;"  value="{{rateValue}}" bindchange="bindChange" class="{{ rateShow ? 'show' : '' }}">
+<picker-view mask-style="background-color:#000;opacity: 0;" indicator-style="height: 50px;border-top:1px solid#FFBD5A;border-bottom:1px solid#FFBD5A;" value="{{rateValue}}" bindchange="bindChange" class="{{ rateShow ? 'show' : '' }}">
   <view class='btns'>
     <view bindtap="onRateClose">取消</view>
     <view bindtap="getValue">确认</view>

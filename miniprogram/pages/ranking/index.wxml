@@ -8,18 +8,36 @@
   </view>
 
   <view>
-	<text>Level 3</text>
-	<van-progress percentage="50"  stroke-width="8" color="#FFBD5A" show-pivot="{{false}}" />
+    <text>Level 3</text>
+    <van-progress percentage="50" stroke-width="14" color="#FFBD5A" track-color="#313030" show-pivot="{{false}}" />
   </view>
   <!-- Circle Progress Bar -->
-  <view class="progress-container">
-    <view class="circle">
-      <view class="percentage">{{progress}}%</view>
-      <view class="info">
-        <view class="rank">{{friendRank}} 好友排名</view>
-        <view class="global-rank">{{globalRank}} 社区排名</view>
+  <view class="row" style="gap:40px;margin-top:20px;justify-content: space-around;">
+    <image src="/public/rate/circle.svg" style="width: 172px;height: 172px;" />
+    <view class="col" style="gap:10px; ">
+      <view class="row text-white items-center" style="gap:10px;">
+        <view style="background-color: #FFBD5A;width: 5px; height: 100%; border-radius: 8px;"></view>
+        <view class="col">
+          <text class="text-bold" style="font-size: 1.5rem;">89%</text>
+          <text style="color:#BDBDBD;font-size: 12px;">正确率</text>
+        </view>
+      </view>
+      <view class="row text-white items-center" style="gap:10px;">
+        <view style="background-color: #FF6A3B;width: 5px; height: 100%; border-radius: 8px;"></view>
+        <view class="col">
+          <text class="text-bold" style="font-size: 1.5rem;">4</text>
+          <text style="color:#BDBDBD;font-size: 12px;">好友排名</text>
+        </view>
+      </view>
+      <view class="row text-white items-center" style="gap:10px;">
+        <view style="background-color: #FFF3AB;width: 5px; height: 100%; border-radius: 8px;"></view>
+        <view class="col">
+          <text class="text-bold" style="font-size: 1.5rem;">33599</text>
+          <text style="color:#BDBDBD;font-size: 12px;">社区排名</text>
+        </view>
       </view>
     </view>
+
   </view>
 
   <!-- Friend and Global Rankings -->
