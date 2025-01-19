@@ -33,7 +33,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.getlyrics(options.id)
+    this.getlyrics(options.id, options.name)
     // const id = JSON.parse(decodeURIComponent(options.id));
     // this.startLyricsScroll();
     wx.onBLECharacteristicValueChange((res) => {
@@ -305,13 +305,14 @@ Page({
       .join("");
   },
 
-  getlyrics(id) {
+  getlyrics(id, name) {
     wx.request({
       url: 'http://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
       method: 'GET',
       success: (res) => {
         this.setData({
-          songId: res.data.data.song_id
+          songId: res.data.data.song_id,
+          song_name: name
         })
         this.lyricsToArray(res.data.data.lyric);
 

@@ -110,8 +110,9 @@ Page({
 
   gotofollow(e) {
     const id = e.currentTarget.dataset.id;
+    const name = e.currentTarget.dataset.name;
     wx.navigateTo({
-      url: "/pages/follow/index?id=" + id
+      url: "/pages/follow/index?id=" + id + "&name=" + name
     })
   },
 
