@@ -36,7 +36,7 @@ Page({
     // const id = JSON.parse(decodeURIComponent(options.id));
     // this.startLyricsScroll();
     wx.onBLECharacteristicValueChange((res) => {
-      console.log('BLE 特征值变化：', res);
+      // console.log('BLE 特征值变化：', res);
       let u8Buf = this.hexStringToUint8Array(this.ab2hex(res.value))
       // 处理蓝牙特征值变化的逻辑
       switch (u8Buf[0]) {
@@ -271,7 +271,7 @@ Page({
       deviceId: device_id,
       serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
       characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
-      value: sendBuf,
+      value: sendBuf.buffer,
       success(res) {
         console.log("writeBLECharacteristicValue success", res.errMsg);
       },

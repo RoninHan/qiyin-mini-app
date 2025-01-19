@@ -73,6 +73,11 @@ App<IAppOption>({
                   },
                   success: (res) => {
                     console.log(res);
+                    wx.showToast({
+                      title: "链接设备成功",
+                      icon: 'success',
+                      duration: 2000
+                    })
                     wx.notifyBLECharacteristicValueChange({
                       state: true,
                       deviceId: that.globalData.device_id,
