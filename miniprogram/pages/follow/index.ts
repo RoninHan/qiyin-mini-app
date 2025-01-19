@@ -21,7 +21,11 @@ Page({
     currentTime: 0, // 当前时间（模拟）
     highlightIndex: 0, // 当前高亮歌词的索引
     isPaused: false, // 播放暂停状态
-    songId: 0
+    songId: 0,
+
+    processedArray: [],
+    processedIndex: 0,
+    timeElapsed: 0
   },
 
   /**
@@ -89,17 +93,19 @@ Page({
 
   // 格式化歌词，处理 #9 和 _6，生成格式化后的歌词
   formatLyrics() {
+    let pArray = []
     const formatted = this.data.lyrics.map((line) => {
       let formattedLine = [];
       let regex = /[#].{2}|_(\d+)|([^#_]+)/g;
       let matches = line.text.match(regex);
       if (matches) {
-        // console.log(matches)
+        let processedItem = [];
         matches.forEach((match) => {
           let num = match.slice(1)[0];
 
 
           if (match.startsWith('#')) {
+            processedItem.push(match)
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
                 { name: 'div', attrs: { class: 'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
@@ -107,6 +113,7 @@ Page({
               ]
             });
           } else if (match.startsWith('_')) {
+            processedItem.push(match)
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
                 { name: 'div', attrs: { class: 'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
@@ -117,6 +124,7 @@ Page({
             formattedLine.push({ type: 'text', text: match });
           }
         });
+        pArray.push(processedItem)
       }
       line.original = line.text;
       line.text = [{ name: 'div', attrs: { style: 'display:flex;margin-top:30px;justify-content: center;' }, children: formattedLine }];
@@ -124,91 +132,72 @@ Page({
       return line
     });
     this.setData({
+      processedArray: pArray,
       formattedLyrics: formatted,
     });
   },
 
   // 开始歌词滚动的定时器
   startLyricsScroll() {
+    const that = this;
     const totalDuration = this.data.lyrics[this.data.lyrics.length - 1].time; // 获取歌词总时长
+    // console.log(totalDuration)
     this.timer = setInterval(() => {
       if (this.data.currentTime >= totalDuration || this.data.isPaused) {
         clearInterval(this.timer); // 停止定时器
         return;
       }
-
+      console.log(that.data.currentTime)
       // 更新当前时间
       this.setData({
-        currentTime: this.data.currentTime + 1,
+        currentTime: that.data.currentTime + 1,
       });
 
       // 获取当前歌词行和它的播放时间
       const currentLyric = this.data.lyrics[this.data.highlightIndex];
-      // console.log(currentLyric)
+      console.log("currentLyric", currentLyric)
       // 获取当前行歌词文本，按空格分割成词
-      const words = currentLyric.original.split(' ');
+      const words = currentLyric.original.split('');
 
       // 计算每个词的播放时间，假设每个词的播放时间均匀分配
       const lineDuration = this.data.lyrics[this.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
       const wordDuration = lineDuration / words.length; // 每个词的播放时间
-
+      // console.log("wordslength", words.length)
+      // console.log("wordDuration", wordDuration)
       // 遍历当前行的每个词，判断当前时间是否达到该词的播放时间，并检查是否包含 '#' 或 '_'
       let timeElapsed = 0; // 累计时间，表示已播放的时间
-
+      let processedIndex = that.data.processedIndex;
       for (let i = 0; i < words.length; i++) {
         timeElapsed += wordDuration; // 当前词的播放时间
         const word = words[i];
-
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
-        if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration && (word.includes('#') || word.includes('_'))) {
-          // 提取 # 或 _ 后面的字
-          // 检查是否遇到 '#' 或 '_'
-          const hashMatch = word.match(/#(\d)/);  // 匹配 # 后的数字
-          const underscoreMatch = word.match(/_(\d)/);  // 匹配 _ 后的数字
-
-          if (hashMatch) {
-            // 遇到 # 后暂停，并获取 # 后的数字
-            const hashNumber = hashMatch[1];
-            console.log(`遇到 # 后面的数字是: ${hashNumber}`);
-
-            // 暂停播放
-            // this.setData({
-            //   isPaused: true,
-            // });
-
-            this.send(hashNumber);
-            this.togglePlayback();
-            // clearInterval(this.timer); // 清除定时器
-            break; // 退出循环
-          }
-
-          if (underscoreMatch) {
-            // 遇到 _ 且已遇到过 #
-            const underscoreNumber = underscoreMatch[1];
-            console.log(`遇到 _ 后面的数字是: ${underscoreNumber}`);
-
-            // 执行继续播放逻辑
-            // this.setData({
-            //   isPaused: true,  // 继续播放
-            // });
-            this.send(underscoreNumber);
-            this.togglePlayback()
-            // clearInterval(this.timer); // 清除定时器
-            break; // 退出循环
-          }
-
-          // this.setData({ isPaused: true }); // 如果遇到包含 '#' 或 '_' 的词，暂停播放
-          // clearInterval(this.timer); // 清除定时器
-          // console.log(timeElapsed)
-          // console.log("暂停播放")
-          // break; // 退出循环
+        if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration
+          && (word.includes('#') || word.includes('_'))
+          && that.data.processedArray[that.data.highlightIndex].length - 1 > that.data.processedIndex) {
+          console.log("math", Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)))
+          console.log("timeElapsed", timeElapsed)
+          const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
+          console.log("Send：", includesNum)
+          console.log("processedIndex", processedIndex)
+          this.togglePlayback();
+          this.send(includesNum);
+          let nowIndex = processedIndex + 1
+          console.log("nowIndex", nowIndex);
+          this.setData({
+            processedIndex: nowIndex
+          })
+          break;
         }
       }
-
+      this.setData({
+        timeElapsed,
+        currentLyric
+      })
       // 更新歌词高亮和滚动位置
       this.updateLyricsHighlight();
-    }, 500);
+    }, 1000);
   },
+
   // 滚动到第一行歌词
   scrollToFirstLine() {
     const lineHeight = 24; // 每行歌词的高度（根据需要调整）
@@ -225,9 +214,12 @@ Page({
     const currentTime = this.data.currentTime;
     let highlightIndex = this.data.lyrics.findIndex((item) => item.time <= currentTime && (this.data.lyrics[this.data.lyrics.indexOf(item) + 1] ? this.data.lyrics[this.data.lyrics.indexOf(item) + 1].time > currentTime : true));
 
-    if (highlightIndex !== -1) {
+    if (highlightIndex !== -1 && highlightIndex !== this.data.highlightIndex) {
+      console.log("nowhighlightIndex", highlightIndex)
+      console.log(highlightIndex !== this.data.highlightIndex)
       this.setData({
         highlightIndex,
+        processedIndex: 0,
       });
 
       // 计算滚动位置，确保高亮歌词居中
