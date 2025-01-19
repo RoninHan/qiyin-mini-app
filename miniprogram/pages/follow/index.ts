@@ -13,7 +13,7 @@ Page({
     ],
     value: 0,
     lyrics: [
-      
+
       // 继续填写其他歌词...
     ],
     formattedLyrics: [],
@@ -21,6 +21,7 @@ Page({
     currentTime: 0, // 当前时间（模拟）
     highlightIndex: 0, // 当前高亮歌词的索引
     isPaused: false, // 播放暂停状态
+    songId: 0
   },
 
   /**
@@ -30,7 +31,38 @@ Page({
     this.getlyrics(options.id)
     // const id = JSON.parse(decodeURIComponent(options.id));
     // this.startLyricsScroll();
-    
+    wx.onBLECharacteristicValueChange((res) => {
+      console.log('BLE 特征值变化：', res);
+      let u8Buf = this.hexStringToUint8Array(this.ab2hex(res.value))
+      // 处理蓝牙特征值变化的逻辑
+      switch (u8Buf[0]) {
+        case 0x11:
+          console.log("dev trig"); // 设备按正确组合后发送
+          this.togglePlayback();
+          break;
+        default:
+          break;
+      }
+    });
+  },
+  hexStringToUint8Array(hexString: string): Uint8Array {
+    // 去除可能存在的空格和换行符
+    hexString = hexString.replace(/\s+/g, '');
+
+    // 检查字符串长度是否为偶数
+    if (hexString.length % 2 !== 0) {
+      throw new Error('Invalid hex string length');
+    }
+
+    // 创建 Uint8Array
+    const uint8Array = new Uint8Array(hexString.length / 2);
+
+    // 遍历字符串，每两个字符转换为一个字节
+    for (let i = 0; i < hexString.length; i += 2) {
+      uint8Array[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
+    }
+
+    return uint8Array;
   },
   // 提取歌词中的时间戳并为每一行设置 time 属性
   extractTime() {
@@ -64,18 +96,21 @@ Page({
       if (matches) {
         // console.log(matches)
         matches.forEach((match) => {
+          let num = match.slice(1)[0];
+
+
           if (match.startsWith('#')) {
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
-                { name: 'div', attrs: { class:'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
-                { name: 'div', attrs: { class:'hasbgtext' }, children: [{ type: 'text', text: match.slice(1)[1] }] }
+                { name: 'div', attrs: { class: 'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
+                { name: 'div', attrs: { class: `hasbgtext bgNum-${num}` }, children: [{ type: 'text', text: match.slice(1)[1] }] }
               ]
             });
           } else if (match.startsWith('_')) {
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
-                { name: 'div', attrs: { class:'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
-                { name: 'div', attrs: { class:'notext' }, children: [{ type: 'text', text: ' ' }] }
+                { name: 'div', attrs: { class: 'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
+                { name: 'div', attrs: { class: `notext bgNum-${num}` }, children: [{ type: 'text', text: ' ' }] }
               ]
             });
           } else {
@@ -128,37 +163,39 @@ Page({
         if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration && (word.includes('#') || word.includes('_'))) {
           // 提取 # 或 _ 后面的字
           // 检查是否遇到 '#' 或 '_'
-        const hashMatch = word.match(/#(\d)/);  // 匹配 # 后的数字
-        const underscoreMatch = word.match(/_(\d)/);  // 匹配 _ 后的数字
+          const hashMatch = word.match(/#(\d)/);  // 匹配 # 后的数字
+          const underscoreMatch = word.match(/_(\d)/);  // 匹配 _ 后的数字
 
-        if (hashMatch) {
-          // 遇到 # 后暂停，并获取 # 后的数字
-          const hashNumber = hashMatch[1];
-          console.log(`遇到 # 后面的数字是: ${hashNumber}`);
+          if (hashMatch) {
+            // 遇到 # 后暂停，并获取 # 后的数字
+            const hashNumber = hashMatch[1];
+            console.log(`遇到 # 后面的数字是: ${hashNumber}`);
 
-          // 暂停播放
-          this.setData({ 
-            isPaused: true, 
-          });
+            // 暂停播放
+            // this.setData({
+            //   isPaused: true,
+            // });
 
-          this.send(hashNumber)
-          clearInterval(this.timer); // 清除定时器
-          break; // 退出循环
-        }
+            this.send(hashNumber);
+            this.togglePlayback();
+            // clearInterval(this.timer); // 清除定时器
+            break; // 退出循环
+          }
 
-        if (underscoreMatch) {
-          // 遇到 _ 且已遇到过 #
-          const underscoreNumber = underscoreMatch[1];
-          console.log(`遇到 _ 后面的数字是: ${underscoreNumber}`);
-          
-          // 执行继续播放逻辑
-          this.setData({ 
-            isPaused: false,  // 继续播放
-          });
-          this.send(underscoreNumber)
-          clearInterval(this.timer); // 清除定时器
-          break; // 退出循环
-        }
+          if (underscoreMatch) {
+            // 遇到 _ 且已遇到过 #
+            const underscoreNumber = underscoreMatch[1];
+            console.log(`遇到 _ 后面的数字是: ${underscoreNumber}`);
+
+            // 执行继续播放逻辑
+            // this.setData({
+            //   isPaused: true,  // 继续播放
+            // });
+            this.send(underscoreNumber);
+            this.togglePlayback()
+            // clearInterval(this.timer); // 清除定时器
+            break; // 退出循环
+          }
 
           // this.setData({ isPaused: true }); // 如果遇到包含 '#' 或 '_' 的词，暂停播放
           // clearInterval(this.timer); // 清除定时器
@@ -218,81 +255,39 @@ Page({
     }
   },
 
-  send(str: string) {
-    let that = this;
-    let device_id= app.globalData.device_id
+  //**
+  //* 
+  //* @param music_id  歌词id
+  //* @param hexian_id  和弦id
+  //* @param geci 歌词字符串
+  //
+  send(hexian_id: number, geci?: string) {
+    let device_id = app.globalData.device_id
     if (!device_id) {
       console.error("error:require deviceid");
       return;
     }
 
-    function hexStringToUint8Array(hexString: string): Uint8Array {
-      // 去除可能存在的空格和换行符
-      hexString = hexString.replace(/\s+/g, '');
-  
-      // 检查字符串长度是否为偶数
-      if (hexString.length % 2 !== 0) {
-        throw new Error('Invalid hex string length');
-      }
-  
-      // 创建 Uint8Array
-      const uint8Array = new Uint8Array(hexString.length / 2);
-  
-      // 遍历字符串，每两个字符转换为一个字节
-      for (let i = 0; i < hexString.length; i += 2) {
-        uint8Array[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
-      }
-  
-      return uint8Array;
-    }
-    function ab2hex(buffer) {
-      let hexArr = Array.prototype.map.call(
-        new Uint8Array(buffer),
-        function (bit) {
-          return ('00' + bit.toString(16)).slice(-2)
-        }
-      )
-      return hexArr.join('');
-    }
+    const sendBuf = new Uint8Array(3);
+    sendBuf[0] = 0x30;
+    sendBuf[1] = this.data.songId;
+    sendBuf[2] = hexian_id;
+    // TODO: 将歌词转换成utf8编码数组， 这个需求20250119不搞
 
-    let hexString = this.stringToHex(str);
-    let sendBuf = this.hexToBuffer(hexString);
     wx.writeBLECharacteristicValue({
-      deviceId:device_id,
+      deviceId: device_id,
       serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
       characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
       value: sendBuf,
       success(res) {
         console.log("writeBLECharacteristicValue success", res.errMsg);
-        wx.onBLECharacteristicValueChange(function (res) {
-          let u8Buf = hexStringToUint8Array(ab2hex(res.value))
-          switch (u8Buf[0]) {
-            case 0x00:
-              console.log("bat" + u8Buf[1])
-              break;
-            case 0x10:
-              console.log(
-                "vol" + u8Buf[1] + "," +
-                "yindao" + u8Buf[2] + "," +
-                "play_speed" + u8Buf[3] + "," +
-                "guji_style" + u8Buf[4] + "," +
-                "bo1_style" + u8Buf[5] + "," +
-                "bo2_style" + u8Buf[6] + "," +
-                "rgb_mode" + u8Buf[7]
-              )
-              that.togglePlayback()
-              break;
-            default:
-              break;
-          }
-        })
       },
     });
   },
 
-  
 
-   hexToBuffer (hex: string){
+
+  hexToBuffer(hex: string) {
     const pairs = hex.match(/[\s\S]{1,2}/g) || [];
     const decimalArray = pairs.map((pair) => parseInt(pair, 16));
     const arr = new Uint8Array(decimalArray.length);
@@ -302,25 +297,25 @@ Page({
     return arr.buffer;
   },
 
-   ab2hex (buffer: ArrayBuffer){
+  ab2hex(buffer: ArrayBuffer) {
     let hexArr = Array.prototype.map.call(new Uint8Array(buffer), function (bit) {
       return ("00" + bit.toString(16)).slice(-2);
     });
     return hexArr.join("");
   },
 
-   stringToHex(str: string) {
+  stringToHex(str: string) {
     return str
       .split("")
       .map((char) => char.charCodeAt(0).toString(16).padStart(2, "0"))
       .join("");
   },
 
-  getlyrics(id){
+  getlyrics(id) {
     wx.request({
-      url:'https://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/'+id,
-      method:'GET',
-      success:(res)=>{
+      url: 'https://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
+      method: 'GET',
+      success: (res) => {
         this.lyricsToArray(res.data.data.lyric);
 
         setTimeout(() => {
@@ -330,14 +325,14 @@ Page({
 
           this.scrollToFirstLine();
         }, 100);
-        
+
       }
     })
   },
-  lyricsToArray(lyrics:string){
+  lyricsToArray(lyrics: string) {
     let lyricsArray = lyrics.split("\n");
     this.setData({
-      lyrics:lyricsArray
+      lyrics: lyricsArray
     })
   },
 
