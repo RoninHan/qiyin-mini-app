@@ -7,9 +7,9 @@ Page({
    */
   data: {
     option: [
-      { text: '設備連接', value: 0 },
-      { text: '好評排序', value: 1 },
-      { text: '銷量排序', value: 2 },
+      { text: '设备链接', value: 0 },
+      { text: '好评排序', value: 1 },
+      { text: '销量排序', value: 2 },
     ],
     value: 0,
     lyrics: [
@@ -25,7 +25,8 @@ Page({
 
     processedArray: [],
     processedIndex: 0,
-    timeElapsed: 0
+    timeElapsed: 0,
+    song_name: "旅行的意义"
   },
 
   /**
@@ -147,7 +148,7 @@ Page({
         clearInterval(this.timer); // 停止定时器
         return;
       }
-      console.log(that.data.currentTime)
+      console.log("currentTime", that.data.currentTime)
       // 更新当前时间
       this.setData({
         currentTime: that.data.currentTime + 1,
@@ -174,15 +175,15 @@ Page({
         if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration
           && (word.includes('#') || word.includes('_'))
           && that.data.processedArray[that.data.highlightIndex].length - 1 > that.data.processedIndex) {
-          console.log("math", Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)))
-          console.log("timeElapsed", timeElapsed)
+          // console.log("math", Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)))
+          // console.log("timeElapsed", timeElapsed)
           const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
           console.log("Send：", includesNum)
           console.log("processedIndex", processedIndex)
           this.togglePlayback();
           this.send(includesNum);
           let nowIndex = processedIndex + 1
-          console.log("nowIndex", nowIndex);
+          // console.log("nowIndex", nowIndex);
           this.setData({
             processedIndex: nowIndex
           })
@@ -205,9 +206,9 @@ Page({
     const centerOffset = Math.floor(containerHeight / 2 - lineHeight / 2); // 居中偏移量
 
     // 设置 scrollTop 使第一行歌词居中
-    this.setData({
-      scrollTop: centerOffset,
-    });
+    // this.setData({
+    //   scrollTop: centerOffset,
+    // });
   },
   // 更新歌词高亮
   updateLyricsHighlight() {
@@ -216,7 +217,7 @@ Page({
 
     if (highlightIndex !== -1 && highlightIndex !== this.data.highlightIndex) {
       console.log("nowhighlightIndex", highlightIndex)
-      console.log(highlightIndex !== this.data.highlightIndex)
+      // console.log(highlightIndex !== this.data.highlightIndex)
       this.setData({
         highlightIndex,
         processedIndex: 0,
@@ -254,7 +255,7 @@ Page({
   //* @param geci 歌词字符串
   //
   send(hexian_id: number, geci?: string) {
-    console.log(this.data.songId)
+    console.log("songId", this.data.songId)
     let device_id = app.globalData.device_id
     if (!device_id) {
       console.error("error:require deviceid");

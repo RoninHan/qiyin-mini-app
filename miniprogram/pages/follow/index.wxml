@@ -12,7 +12,7 @@
   <view style="flex:1;height: 100%;">
     <view class="col justify-center">
       <view class="text-white">
-        旅行的意義
+        {{song_name}}
       </view>
       <view class="text-white">
         4:19
@@ -37,4 +37,4 @@
     </view>
   </scroll-view>
 </view>
-<!-- <button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button> -->
+<button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button>
