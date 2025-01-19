@@ -5,9 +5,9 @@ const app = getApp<IAppOption>()
 Page({
   data: {
     option: [
-      { text: '設備連接', value: 0 },
-      { text: '好評排序', value: 1 },
-      { text: '銷量排序', value: 2 },
+      { text: '设备链接', value: 0 },
+      { text: '好评排序', value: 1 },
+      { text: '销量排序', value: 2 },
     ],
     value: 0,
     battery: 45, // 电量

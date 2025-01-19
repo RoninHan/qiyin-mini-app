@@ -1,48 +1,48 @@
 <!--pages/me/me.wxml-->
-<navigation-bar title="個人頁面" back="{{false}}" color="white" background="#000"></navigation-bar>
+<navigation-bar title="个人页面" back="{{false}}" color="white" background="#000"></navigation-bar>
 <!-- 用户信息 -->
 <view class="user-info">
-    <image class="avatar" src="/public/testavatar.png" />
-    <view class="nickname">喵喵喵</view>
-    <view class="description">纯粹热爱音乐！</view>
-  </view>
+  <image class="avatar" src="/public/testavatar.png" />
+  <view class="nickname">喵喵喵</view>
+  <view class="description">纯粹热爱音乐！</view>
+</view>
 
-  <!-- 功能入口 -->
-  <view class="features">
-    <view class="feature-item">
-      <view class="feature-title">Collect</view>
-      <view class="feature-subtitle">收藏</view>
-    </view>
-    <view class="feature-item">
-      <view class="feature-title">Creation</view>
-      <view class="feature-subtitle">创作</view>
-    </view>
-    <view class="feature-item" bind:tap="goToFirend">
-      <view class="feature-title">Friends</view>
-      <view class="feature-subtitle">好友</view>
-    </view>
+<!-- 功能入口 -->
+<view class="features">
+  <view class="feature-item">
+    <view class="feature-title">Collect</view>
+    <view class="feature-subtitle">收藏</view>
   </view>
+  <view class="feature-item">
+    <view class="feature-title">Creation</view>
+    <view class="feature-subtitle">创作</view>
+  </view>
+  <view class="feature-item" bind:tap="goToFirend">
+    <view class="feature-title">Friends</view>
+    <view class="feature-subtitle">好友</view>
+  </view>
+</view>
 
-  <!-- 设置选项 -->
-  <view class="settings">
-    <view class="setting-item" data-url="/pages/my-download/index"  bindtap="navigateTo" >
-      <image class="icon" src="/public/about/settings.svg" />
-      <text class="setting-title">我的下载</text>
-      <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
-    </view>
-    <view class="setting-item" data-url="/pages/version-update/index"  bindtap="navigateTo" >
-      <image class="icon" src="/public/about/share.svg" />
-      <text class="setting-title">版本更新</text>
-      <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
-    </view>
-    <view class="setting-item" data-url="/pages/clear-cache/index"  bindtap="navigateTo" >
-      <image class="icon" src="/public/about/clearcache.svg" />
-      <text class="setting-title">清理缓存</text>
-      <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
-    </view>
-    <view class="setting-item" data-url="/pages/use-tutorial/index"  bindtap="navigateTo" >
-      <image class="icon" src="/public/about/paste.svg" />
-      <text class="setting-title">使用教程</text>
-      <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
-    </view>
+<!-- 设置选项 -->
+<view class="settings">
+  <view class="setting-item" data-url="/pages/my-download/index" bindtap="navigateTo">
+    <image class="icon" src="/public/about/settings.svg" />
+    <text class="setting-title">我的下载</text>
+    <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
   </view>
+  <view class="setting-item" data-url="/pages/version-update/index" bindtap="navigateTo">
+    <image class="icon" src="/public/about/share.svg" />
+    <text class="setting-title">版本更新</text>
+    <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
+  </view>
+  <view class="setting-item" data-url="/pages/clear-cache/index" bindtap="navigateTo">
+    <image class="icon" src="/public/about/clearcache.svg" />
+    <text class="setting-title">清理缓存</text>
+    <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
+  </view>
+  <view class="setting-item" data-url="/pages/use-tutorial/index" bindtap="navigateTo">
+    <image class="icon" src="/public/about/paste.svg" />
+    <text class="setting-title">使用教程</text>
+    <image class="arrow" src="/public/about/Navigation/Draw/arrow_right.svg" />
+  </view>
+</view>

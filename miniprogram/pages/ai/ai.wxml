@@ -1,5 +1,5 @@
 <!--pages/ai/ai.wxml-->
-<navigation-bar title="AI寫歌" back="{{false}}" color="white" background="#000"></navigation-bar>
+<navigation-bar title="AI写歌" back="{{false}}" color="white" background="#000"></navigation-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view style="width: 95%;margin:0 auto;">
     <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
@@ -22,11 +22,11 @@
 
   <!-- 输入框 -->
   <view class="input-container">
-    <view class="text-white tip">輸入提示詞</view>
+    <view class="text-white tip">输入提示词</view>
     <view class="dirver"></view>
 
     <view class="body">
-      描述想要寫的歌詞
+      描述想要写的歌词
     </view>
     <view class="dirver"></view>
     <!-- 操作按钮 -->

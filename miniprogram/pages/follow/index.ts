@@ -101,17 +101,20 @@ Page({
       let regex = /[#].{2}|_(\d+)|([^#_]+)/g;
       let matches = line.text.match(regex);
       if (matches) {
+        console.log(matches)
         let processedItem = [];
+        let index = 0;
         matches.forEach((match) => {
           let num = match.slice(1)[0];
 
 
           if (match.startsWith('#')) {
+            index +=1
             processedItem.push(match)
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
                 { name: 'div', attrs: { class: 'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
-                { name: 'div', attrs: { class: `hasbgtext bgNum-${num}` }, children: [{ type: 'text', text: match.slice(1)[1] }] }
+                { name: 'div', attrs: { class: `hasbgtext bgNum-${num} active-${index}` }, children: [{ type: 'text', text: match.slice(1)[1] }] }
               ]
             });
           } else if (match.startsWith('_')) {
@@ -119,7 +122,7 @@ Page({
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
                 { name: 'div', attrs: { class: 'superscript' }, children: [{ type: 'text', text: match.slice(1)[0] }] },
-                { name: 'div', attrs: { class: `notext bgNum-${num}` }, children: [{ type: 'text', text: ' ' }] }
+                { name: 'div', attrs: { class: `notext bgNum-${num} active-${index}` }, children: [{ type: 'text', text: ' ' }] }
               ]
             });
           } else {
@@ -175,7 +178,7 @@ Page({
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
         if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration
           && (word.includes('#') || word.includes('_'))
-          && that.data.processedArray[that.data.highlightIndex].length - 1 > that.data.processedIndex) {
+          && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
           // console.log("math", Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)))
           // console.log("timeElapsed", timeElapsed)
           const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];

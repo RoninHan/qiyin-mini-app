@@ -33,8 +33,8 @@
   <scroll-view class="lyrics-container" scroll-y="true" scroll-with-animation scroll-top="{{scrollTop}}">
     <view wx:for="{{formattedLyrics}}" wx:key="index" class="lyric-line" data-index="{{index}}">
       <!-- <text class="lyric-text {{index === highlightIndex ? 'highlight' : ''}}">{{item.text}}</text> -->
-      <rich-text class="lyric-text {{index === highlightIndex ? 'highlight' : index === highlightIndex+1?'nexthighlight':'nohighlight'}} lyric-ss-{{shan}}" nodes="{{item.text}}"></rich-text>
+      <rich-text class="lyric-text {{index === highlightIndex ? 'highlight' : index === highlightIndex+1?'nexthighlight':'nohighlight'}} lyric-ss-{{shan}} active-{{processedIndex}}" nodes="{{item.text}}"></rich-text>
     </view>
   </scroll-view>
 </view>
-<button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button>
+<!-- <button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button> -->
