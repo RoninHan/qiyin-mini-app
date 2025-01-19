@@ -20,20 +20,20 @@ App<IAppOption>({
     function hexStringToUint8Array(hexString: string): Uint8Array {
       // 去除可能存在的空格和换行符
       hexString = hexString.replace(/\s+/g, '');
-  
+
       // 检查字符串长度是否为偶数
       if (hexString.length % 2 !== 0) {
         throw new Error('Invalid hex string length');
       }
-  
+
       // 创建 Uint8Array
       const uint8Array = new Uint8Array(hexString.length / 2);
-  
+
       // 遍历字符串，每两个字符转换为一个字节
       for (let i = 0; i < hexString.length; i += 2) {
         uint8Array[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
       }
-  
+
       return uint8Array;
     }
     function ab2hex(buffer) {
@@ -45,50 +45,59 @@ App<IAppOption>({
       )
       return hexArr.join('');
     }
-    wx.request({
-      url: "https://www.axiarz.com/api/setting",
-      method: "GET",
-      success: (res) => {
-        console.log(res)
-        this.globalData.device_id = res.data.data.device_id
-        wx.openBluetoothAdapter({
-          fail (res) {
-              console.error(res);
-          },
-          success () {
-            wx.createBLEConnection({
-              deviceId: res.data.data.device_id,
-              success: (res) => {
-                // wx.onBLECharacteristicValueChange(function (res) {
-                //   let u8Buf = hexStringToUint8Array(ab2hex(res.value))
-                //   switch (u8Buf[0]) {
-                //     case 0x00:
-                //       console.log("bat" + u8Buf[1])
-                //       break;
-                //     case 0x10:
-                //       console.log(
-                //         "vol" + u8Buf[1] + "," +
-                //         "yindao" + u8Buf[2] + "," +
-                //         "play_speed" + u8Buf[3] + "," +
-                //         "guji_style" + u8Buf[4] + "," +
-                //         "bo1_style" + u8Buf[5] + "," +
-                //         "bo2_style" + u8Buf[6] + "," +
-                //         "rgb_mode" + u8Buf[7]
-                //       )
-                //       break;
-                //     default:
-                //       break;
-                //   }
-                // })
+    // wx.request({
+    //   url: "https://www.axiarz.com/api/setting",
+    //   method: "GET",
+    //   success: (res) => {
+    //     console.log(res)
+    this.globalData.device_id = "CC:8D:A2:2E:01:9A";
+    console.log("connect " + this.globalData.device_id)
+    wx.openBluetoothAdapter({
+      fail(res) {
+        console.error(res);
+      },
+      success(res) {
+        console.log(res);
+        wx.startBluetoothDevicesDiscovery({
+          success(res) {
+            console.log(res)
+            wx.onBluetoothDeviceFound(function (res) {
+              var devices = res.devices;
+              console.log()
+              if (devices[0].deviceId == that.globalData.device_id) {
+                wx.stopBluetoothDevicesDiscovery();
+                wx.createBLEConnection({
+                  deviceId: that.globalData.device_id,
+                  fail: (res) => {
+                    console.error(res)
+                  },
+                  success: (res) => {
+                    console.log(res);
+                    wx.notifyBLECharacteristicValueChange({
+                      state: true,
+                      deviceId: that.globalData.device_id,
+                      serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
+                      characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
+                      success(res) {
+                        console.log('notifyBLECharacteristicValueChange success', res.errMsg)
+                      },
+                      fail: (e) => {
+                        console.log(e)
+                      }
+                    })
+                  }
+                })
               }
             })
           }
-        })
-        
+        });
+        //   }
+        // })
+
 
       }
     })
   },
-  
+
 
 })
