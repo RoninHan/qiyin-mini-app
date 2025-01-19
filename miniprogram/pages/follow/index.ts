@@ -262,6 +262,7 @@ Page({
   //* @param geci 歌词字符串
   //
   send(hexian_id: number, geci?: string) {
+    console.log(this.data.songId)
     let device_id = app.globalData.device_id
     if (!device_id) {
       console.error("error:require deviceid");
@@ -313,7 +314,7 @@ Page({
 
   getlyrics(id) {
     wx.request({
-      url: 'https://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
+      url: 'http://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
       method: 'GET',
       success: (res) => {
         this.setData({

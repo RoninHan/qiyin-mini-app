@@ -117,7 +117,7 @@ Page({
 
   getSongType() {
     wx.request({
-      url: "https://www.axiarz.com/api/song_type",
+      url: "http://www.axiarz.com/api/song_type",
       method: "GET",
       success: (res) => {
         console.log(res)
@@ -130,12 +130,12 @@ Page({
 
   getSongs() {
     wx.request({
-      url: "https://www.axiarz.com/api/song",
+      url: "http://www.axiarz.com/api/song",
       method: "GET",
       success: (res) => {
         console.log(res)
         this.setData({
-          songs:res.data.data
+          songs: res.data.data
         })
       }
     })

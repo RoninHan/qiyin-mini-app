@@ -46,7 +46,7 @@ App<IAppOption>({
       return hexArr.join('');
     }
     // wx.request({
-    //   url: "https://www.axiarz.com/api/setting",
+    //   url: "http://www.axiarz.com/api/setting",
     //   method: "GET",
     //   success: (res) => {
     //     console.log(res)

@@ -42,8 +42,14 @@
 
   <!-- Friend and Global Rankings -->
   <view class="ranking-tabs">
-    <button bindtap="toggleTab" data-type="friend">好友榜</button>
-    <button bindtap="toggleTab" data-type="global">全球榜</button>
+    <button bindtap="toggleTab" data-type="friend">
+      <text>好友榜</text>
+      <view class="underline"></view>
+    </button>
+    <button bindtap="toggleTab" data-type="global">
+      <text>全球榜</text>
+      <view class="underline"></view>
+    </button>
   </view>
 
   <!-- Rankings Display -->
