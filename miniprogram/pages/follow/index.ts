@@ -26,7 +26,8 @@ Page({
     processedArray: [],
     processedIndex: 0,
     timeElapsed: 0,
-    song_name: "旅行的意义"
+    song_name: "旅行的意义",
+    shan: 0
   },
 
   /**
@@ -128,7 +129,7 @@ Page({
         pArray.push(processedItem)
       }
       line.original = line.text;
-      line.text = [{ name: 'div', attrs: { style: 'display:flex;margin-top:30px;justify-content: center;' }, children: formattedLine }];
+      line.text = [{ name: 'div', attrs: { style: 'display:flex;margin-top:30px;justify-content: center;flex-wrap: wrap;' }, children: formattedLine }];
 
       return line
     });
@@ -178,6 +179,7 @@ Page({
           // console.log("math", Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)))
           // console.log("timeElapsed", timeElapsed)
           const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
+
           console.log("Send：", includesNum)
           console.log("processedIndex", processedIndex)
           this.togglePlayback();
@@ -185,7 +187,8 @@ Page({
           let nowIndex = processedIndex + 1
           // console.log("nowIndex", nowIndex);
           this.setData({
-            processedIndex: nowIndex
+            processedIndex: nowIndex,
+            shan: includesNum
           })
           break;
         }

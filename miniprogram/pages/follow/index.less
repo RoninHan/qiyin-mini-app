@@ -10,7 +10,7 @@ page {
 }
 
 .lyrics-container {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 460px);
   /* 滚动区域的高度 */
   width: 100%;
 }
@@ -32,6 +32,9 @@ page {
   display: block;
   color: #ccc;
 }
+
+
+
 
 .highlight {
   // color: #ffa500;
@@ -67,6 +70,48 @@ page {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  &.lyric-ss-1 {
+    .bgNum-1 {
+      animation: blink 1s infinite alternate;
+    }
+  }
+
+  &.lyric-ss-2 {
+    .bgNum-2 {
+      animation: blink 1s infinite alternate;
+    }
+  }
+
+  &.lyric-ss-3 {
+    .bgNum-3 {
+      animation: blink 1s infinite alternate;
+    }
+  }
+
+  &.lyric-ss-4 {
+    .bgNum-4 {
+      animation: blink 1s infinite alternate;
+    }
+  }
+
+  &.lyric-ss-5 {
+    .bgNum-5 {
+      animation: blink 1s infinite alternate;
+    }
+  }
+
+  &.lyric-ss-6 {
+    .bgNum-6 {
+      animation: blink 1s infinite alternate;
+    }
+  }
+
+  &.lyric-ss-7 {
+    .bgNum-7 {
+      animation: blink 1s infinite alternate;
+    }
   }
 
   .bgNum-1 {
@@ -168,4 +213,22 @@ page {
   font-size: 12px;
   vertical-align: super;
   /* 上标效果 */
+}
+
+/* 定义闪烁动画 */
+@keyframes blink {
+  0% {
+    opacity: 1;
+    /* 不透明 */
+  }
+
+  50% {
+    opacity: 0.6;
+    /* 透明 */
+  }
+
+  100% {
+    opacity: 1;
+    /* 不透明 */
+  }
 }
