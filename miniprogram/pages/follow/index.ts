@@ -316,6 +316,9 @@ Page({
       url: 'https://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
       method: 'GET',
       success: (res) => {
+        this.setData({
+          songId: res.data.data.song_id
+        })
         this.lyricsToArray(res.data.data.lyric);
 
         setTimeout(() => {
