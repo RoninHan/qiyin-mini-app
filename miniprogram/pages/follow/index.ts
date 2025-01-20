@@ -109,7 +109,7 @@ Page({
 
 
           if (match.startsWith('#')) {
-            index +=1
+            index += 1
             processedItem.push(match)
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
@@ -118,6 +118,7 @@ Page({
               ]
             });
           } else if (match.startsWith('_')) {
+            index += 1
             processedItem.push(match)
             formattedLine.push({
               name: 'div', attrs: { style: 'position: relative;margin-left:3px;margin-right:3px;' }, children: [
@@ -141,7 +142,6 @@ Page({
       formattedLyrics: formatted,
     });
   },
-
   // 开始歌词滚动的定时器
   startLyricsScroll() {
     const that = this;
@@ -163,28 +163,24 @@ Page({
       console.log("currentLyric", currentLyric)
       // 获取当前行歌词文本，按空格分割成词
       const words = currentLyric.original.split('');
-
+      console.log("countSpecialChars",words)
       // 计算每个词的播放时间，假设每个词的播放时间均匀分配
       const lineDuration = this.data.lyrics[this.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
       const wordDuration = lineDuration / words.length; // 每个词的播放时间
-      // console.log("wordslength", words.length)
-      // console.log("wordDuration", wordDuration)
+
       // 遍历当前行的每个词，判断当前时间是否达到该词的播放时间，并检查是否包含 '#' 或 '_'
       let timeElapsed = 0; // 累计时间，表示已播放的时间
       let processedIndex = that.data.processedIndex;
-      for (let i = 0; i < words.length; i++) {
-        timeElapsed += wordDuration; // 当前词的播放时间
+      let i = 0;
+      while (i < words.length) {
         const word = words[i];
-        // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
-        if (Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)) < wordDuration
-          && (word.includes('#') || word.includes('_'))
-          && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
-          // console.log("math", Math.abs(this.data.currentTime - (currentLyric.time + timeElapsed)))
-          // console.log("timeElapsed", timeElapsed)
-          const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
+        timeElapsed += wordDuration; // 当前词的播放时间
 
+        // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
+        if ( (word.includes('#') || word.includes('_'))
+          && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
+          const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
           console.log("Send：", includesNum)
-          console.log("processedIndex", processedIndex)
           this.togglePlayback();
           this.send(includesNum);
           let nowIndex = processedIndex + 1
@@ -195,7 +191,13 @@ Page({
           })
           break;
         }
+
+        // 确保只有当时间已达到词的播放时间时才递增索引
+        if (timeElapsed >= (i + 1) * wordDuration) {
+          i++; // 等待当前词的播放时间结束后才递增索引
+        }
       }
+
       this.setData({
         timeElapsed,
         currentLyric
