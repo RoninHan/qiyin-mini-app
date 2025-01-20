@@ -263,7 +263,9 @@ Page({
   send(hexian_id: number, geci?: string) {
     console.log("songId", this.data.songId)
     let device_id = app.globalData.device_id
-    if (!device_id) {
+    let service_id = app.globalData.service_id;
+    let char_id = app.globalData.char_id;
+    if (!device_id || !service_id || !char_id) {
       console.error("error:require deviceid");
       return;
     }
@@ -276,8 +278,8 @@ Page({
 
     wx.writeBLECharacteristicValue({
       deviceId: device_id,
-      serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
-      characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
+      serviceId: service_id,
+      characteristicId: char_id,
       value: sendBuf.buffer,
       success(res) {
         console.log("writeBLECharacteristicValue success", res.errMsg);
