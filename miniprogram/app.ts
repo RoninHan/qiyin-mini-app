@@ -51,7 +51,6 @@ App<IAppOption>({
     //   success: (res) => {
     //     console.log(res)
     this.globalData.device_id = "CC:8D:A2:2E:01:9A";
-    let that = this;
     console.log("connect " + this.globalData.device_id)
     wx.openBluetoothAdapter({
       fail(res) {
