@@ -51,6 +51,7 @@ App<IAppOption>({
     //   success: (res) => {
     //     console.log(res)
     this.globalData.device_id = "CC:8D:A2:2E:01:9A";
+    let that = this;
     console.log("connect " + this.globalData.device_id)
     wx.openBluetoothAdapter({
       fail(res) {
@@ -64,10 +65,11 @@ App<IAppOption>({
             wx.onBluetoothDeviceFound(function (res) {
               var devices = res.devices;
               console.log()
-              if (devices[0].deviceId == that.globalData.device_id) {
+              if (devices[0].deviceId == that.globalData.device_id || devices[0].name == 'qiyin') {
+                that.globalData.device_id = devices[0].deviceId
                 wx.stopBluetoothDevicesDiscovery();
                 wx.createBLEConnection({
-                  deviceId: that.globalData.device_id,
+                  deviceId: devices[0].deviceId,
                   fail: (res) => {
                     console.error(res)
                   },
