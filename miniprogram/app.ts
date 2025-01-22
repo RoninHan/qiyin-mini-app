@@ -1,7 +1,8 @@
 // app.ts
 App<IAppOption>({
   globalData: {
-    device_id: ""
+    device_id: "",
+    is_android:true
   },
   onLaunch() {
     let that = this;
@@ -9,6 +10,17 @@ App<IAppOption>({
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
+
+    // 獲取系統信息
+    // wx.getSystemInfo({
+    //   success: (res) => {
+    //     if (res.platform == 'android') {
+    //       that.globalData.is_android = true
+    //     } else if (res.platform == 'ios') {
+    //       that.globalData.is_android = false
+    //     }
+    //   }
+    // })
 
     // 登录
     wx.login({
@@ -63,7 +75,6 @@ App<IAppOption>({
             console.log(res)
             wx.onBluetoothDeviceFound(function (res) {
               var devices = res.devices;
-              console.log()
               if (devices[0].deviceId == that.globalData.device_id || devices[0].name == 'qiyin') {
                 that.globalData.device_id = devices[0].deviceId
                 wx.stopBluetoothDevicesDiscovery();
@@ -79,18 +90,41 @@ App<IAppOption>({
                       icon: 'success',
                       duration: 2000
                     })
-                    wx.notifyBLECharacteristicValueChange({
-                      state: true,
+                    console.log("device_id2", that.globalData.device_id)
+                    wx.getBLEDeviceServices({
                       deviceId: that.globalData.device_id,
-                      serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
-                      characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
                       success(res) {
-                        console.log('notifyBLECharacteristicValueChange success', res.errMsg)
+                        console.log('device services:', res.services)
+                        for(let ser of res.services) {
+                          if(ser.uuid.includes("00FF") || ser.uuid.includes("00ff")) {
+                            wx.getBLEDeviceCharacteristics({
+                              deviceId: that.globalData.device_id,
+                              serviceId: ser.uuid,
+                              success(res) {
+                                for (let char of res.characteristics) {
+                                  if(char.uuid.includes("FF01") || char.uuid.includes("ff01")) {
+                                    wx.notifyBLECharacteristicValueChange({
+                                      state: true,
+                                      deviceId: that.globalData.device_id,
+                                      serviceId: ser.uuid,
+                                      characteristicId: char.uuid,
+                                      success(res) {
+                                        console.log('notifyBLECharacteristicValueChange success', res.errMsg)
+                                      },
+                                      fail: (e) => {
+                                        console.log('notifyBLECharacteristicValueChange fail',e)
+                                      }
+                                    })
+                                  }
+                                  break;
+                                }
+                              }
+                            });
+                            break;
+                          }
+                        }
                       },
-                      fail: (e) => {
-                        console.log(e)
-                      }
-                    })
+                    });
                   }
                 })
               }
