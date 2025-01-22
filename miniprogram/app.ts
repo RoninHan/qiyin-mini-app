@@ -58,7 +58,7 @@ App<IAppOption>({
       return hexArr.join('');
     }
     // wx.request({
-    //   url: "http://www.axiarz.com/api/setting",
+    //   url: "https://www.axiarz.com/api/setting",
     //   method: "GET",
     //   success: (res) => {
     //     console.log(res)
@@ -85,11 +85,6 @@ App<IAppOption>({
                   },
                   success: (res) => {
                     console.log(res);
-                    wx.showToast({
-                      title: "链接设备成功",
-                      icon: 'success',
-                      duration: 2000
-                    })
                     console.log("device_id2", that.globalData.device_id)
                     wx.getBLEDeviceServices({
                       deviceId: that.globalData.device_id,
@@ -97,12 +92,14 @@ App<IAppOption>({
                         console.log('device services:', res.services)
                         for(let ser of res.services) {
                           if(ser.uuid.includes("00FF") || ser.uuid.includes("00ff")) {
+                            that.globalData.service_id = ser.uuid;
                             wx.getBLEDeviceCharacteristics({
                               deviceId: that.globalData.device_id,
                               serviceId: ser.uuid,
                               success(res) {
                                 for (let char of res.characteristics) {
                                   if(char.uuid.includes("FF01") || char.uuid.includes("ff01")) {
+                                    that.globalData.char_id = char.uuid;
                                     wx.notifyBLECharacteristicValueChange({
                                       state: true,
                                       deviceId: that.globalData.device_id,
@@ -110,6 +107,11 @@ App<IAppOption>({
                                       characteristicId: char.uuid,
                                       success(res) {
                                         console.log('notifyBLECharacteristicValueChange success', res.errMsg)
+                                        wx.showToast({
+                                          title: "链接设备成功",
+                                          icon: 'success',
+                                          duration: 2000
+                                        })
                                       },
                                       fail: (e) => {
                                         console.log('notifyBLECharacteristicValueChange fail',e)

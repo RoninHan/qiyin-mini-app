@@ -150,6 +150,9 @@ Page({
     this.timer = setInterval(() => {
       if (this.data.currentTime >= totalDuration || this.data.isPaused) {
         clearInterval(this.timer); // 停止定时器
+        if(this.data.currentTime >= totalDuration){
+          this.over()
+        }
         return;
       }
       console.log("currentTime", that.data.currentTime)
@@ -265,7 +268,9 @@ Page({
   send(hexian_id: number, geci?: string) {
     console.log("songId", this.data.songId)
     let device_id = app.globalData.device_id
-    if (!device_id) {
+    let service_id = app.globalData.service_id;
+    let char_id = app.globalData.char_id;
+    if (!device_id || !service_id || !char_id) {
       console.error("error:require deviceid");
       return;
     }
@@ -278,8 +283,8 @@ Page({
 
     wx.writeBLECharacteristicValue({
       deviceId: device_id,
-      serviceId: "000000ff-0000-1000-8000-00805f9b34fb",
-      characteristicId: "0000ff01-0000-1000-8000-00805f9b34fb",
+      serviceId: service_id,
+      characteristicId: char_id,
       value: sendBuf.buffer,
       success(res) {
         console.log("writeBLECharacteristicValue success", res.errMsg);
@@ -315,7 +320,7 @@ Page({
 
   getlyrics(id, name) {
     wx.request({
-      url: 'http://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
+      url: 'https://www.axiarz.com/api/lyrics/find_lyrics_by_song_id/' + id,
       method: 'GET',
       success: (res) => {
         this.setData({
@@ -341,7 +346,49 @@ Page({
       lyrics: lyricsArray
     })
   },
+  onLyricTap(event) {
+    const index = event.currentTarget.dataset.index;
+    this.setData({ highlightIndex: index });
+  },
+  onScroll(event) {
+    const scrollTop = event.detail.scrollTop;
+    const lineHeight = 30; // 假设每行歌词的高度为40px
+    const index = Math.floor(scrollTop / lineHeight);
+    if (index >= 0 && index < this.data.formattedLyrics.length) {
+      const time = this.data.formattedLyrics[index].time;
+      this.setData({ 
+        currentTime: time,
+        highlightIndex: index,
+        processedIndex:0 
+      });
+    }
+  },
 
+  over(){
+    let device_id = app.globalData.device_id
+    let service_id = app.globalData.service_id;
+    let char_id = app.globalData.char_id;
+    if (!device_id || !service_id || !char_id) {
+      console.error("error:require deviceid");
+      return;
+    }
+
+    const sendBuf = new Uint8Array(3);
+    sendBuf[0] = 0x30;
+    sendBuf[1] = 0;
+    sendBuf[2] = 0;
+    // TODO: 将歌词转换成utf8编码数组， 这个需求20250119不搞
+
+    wx.writeBLECharacteristicValue({
+      deviceId: device_id,
+      serviceId: service_id,
+      characteristicId: char_id,
+      value: sendBuf.buffer,
+      success(res) {
+        console.log("writeBLECharacteristicValue success", res.errMsg);
+      },
+    });
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -368,7 +415,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    this.over()
   },
 
   /**
