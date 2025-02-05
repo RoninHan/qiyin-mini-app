@@ -210,17 +210,6 @@ Page({
     }, 1000);
   },
 
-  // 滚动到第一行歌词
-  scrollToFirstLine() {
-    const lineHeight = 24; // 每行歌词的高度（根据需要调整）
-    const containerHeight = 150; // 假设歌词容器的高度为 300（根据需要调整）
-    const centerOffset = Math.floor(containerHeight / 2 - lineHeight / 2); // 居中偏移量
-
-    // 设置 scrollTop 使第一行歌词居中
-    // this.setData({
-    //   scrollTop: centerOffset,
-    // });
-  },
   // 更新歌词高亮
   updateLyricsHighlight() {
     const currentTime = this.data.currentTime;
@@ -333,8 +322,6 @@ Page({
           this.extractTime(); // 提取时间并存储
           this.formatLyrics();
           this.startLyricsScroll();
-
-          this.scrollToFirstLine();
         }, 100);
 
       }
@@ -359,8 +346,13 @@ Page({
       this.setData({ 
         currentTime: time,
         highlightIndex: index,
-        processedIndex:0 
+        processedIndex:0,
+        isPaused: false
       });
+      setTimeout(()=>{
+        this.startLyricsScroll(); // 继续播放
+      },500)
+      
     }
   },
 
