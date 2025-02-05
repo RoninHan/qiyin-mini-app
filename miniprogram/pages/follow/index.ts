@@ -150,7 +150,7 @@ Page({
     this.timer = setInterval(() => {
       if (this.data.currentTime >= totalDuration || this.data.isPaused) {
         clearInterval(this.timer); // 停止定时器
-        if(this.data.currentTime >= totalDuration){
+        if (this.data.currentTime >= totalDuration) {
           this.over()
         }
         return;
@@ -166,7 +166,7 @@ Page({
       console.log("currentLyric", currentLyric)
       // 获取当前行歌词文本，按空格分割成词
       const words = currentLyric.original.split('');
-      console.log("countSpecialChars",words)
+      console.log("countSpecialChars", words)
       // 计算每个词的播放时间，假设每个词的播放时间均匀分配
       const lineDuration = this.data.lyrics[this.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
       const wordDuration = lineDuration / words.length; // 每个词的播放时间
@@ -180,7 +180,7 @@ Page({
         timeElapsed += wordDuration; // 当前词的播放时间
 
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
-        if ( (word.includes('#') || word.includes('_'))
+        if ((word.includes('#') || word.includes('_'))
           && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
           const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
           console.log("Send：", includesNum)
@@ -224,8 +224,8 @@ Page({
       });
 
       // 计算滚动位置，确保高亮歌词居中
-      const lineHeight = 30; // 每行歌词的高度（根据需要调整）
-      const containerHeight = 150; // 假设歌词容器的高度为 300（根据需要调整）
+      const lineHeight = 70; // 每行歌词的高度（根据需要调整）
+      const containerHeight = 550; // 假设歌词容器的高度为 300（根据需要调整）
       const centerOffset = Math.floor(containerHeight / 2 - lineHeight / 2); // 居中偏移量
 
       // 计算 scrollTop 使高亮歌词居中
@@ -339,24 +339,32 @@ Page({
   },
   onScroll(event) {
     const scrollTop = event.detail.scrollTop;
-    const lineHeight = 30; // 假设每行歌词的高度为40px
+    const lineHeight = 56; // 假设每行歌词的高度为40px
     const index = Math.floor(scrollTop / lineHeight);
     if (index >= 0 && index < this.data.formattedLyrics.length) {
       const time = this.data.formattedLyrics[index].time;
-      this.setData({ 
+      this.setData({
         currentTime: time,
         highlightIndex: index,
-        processedIndex:0,
+        processedIndex: 0,
         isPaused: false
       });
-      setTimeout(()=>{
+
+      // 确保高亮的歌词行居中显示
+      const containerHeight = 552; // 假设容器高度已存储在data中
+      const scrollTo = (index * lineHeight) - (containerHeight / 2) + (lineHeight / 2);
+      this.setData({
+        scrollTop: scrollTo
+      });
+
+      setTimeout(() => {
         this.startLyricsScroll(); // 继续播放
-      },500)
-      
+      }, 500)
+
     }
   },
 
-  over(){
+  over() {
     let device_id = app.globalData.device_id
     let service_id = app.globalData.service_id;
     let char_id = app.globalData.char_id;
