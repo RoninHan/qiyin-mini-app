@@ -27,7 +27,10 @@ Page({
     processedIndex: 0,
     timeElapsed: 0,
     song_name: "旅行的意义",
-    shan: 0
+    shan: 0,
+    containerHeight: 0,
+    maxScrollTop: 0,
+    isover: false
   },
 
   /**
@@ -145,30 +148,37 @@ Page({
   // 开始歌词滚动的定时器
   startLyricsScroll() {
     const that = this;
-    const totalDuration = this.data.lyrics[this.data.lyrics.length - 1].time; // 获取歌词总时长
+    const totalDuration = that.data.lyrics[that.data.lyrics.length - 1].time + 6; // 获取歌词总时长
     // console.log(totalDuration)
     this.timer = setInterval(() => {
-      if (this.data.currentTime >= totalDuration || this.data.isPaused) {
-        clearInterval(this.timer); // 停止定时器
-        if (this.data.currentTime >= totalDuration) {
-          this.over()
+      if (that.data.currentTime >= totalDuration || that.data.isPaused) {
+        clearInterval(that.timer); // 停止定时器
+
+        // console.log("currentTime: ", that.data.currentTime);
+        // console.log("totalDuration: ", totalDuration);
+        if (that.data.currentTime >= totalDuration && !that.data.isover) {
+          that.setData({ isover: true });
+          setTimeout(()=>{
+            that.over()
+          },500)
+          
         }
         return;
       }
       console.log("currentTime", that.data.currentTime)
       // 更新当前时间
-      this.setData({
+      that.setData({
         currentTime: that.data.currentTime + 1,
       });
 
       // 获取当前歌词行和它的播放时间
-      const currentLyric = this.data.lyrics[this.data.highlightIndex];
+      const currentLyric = that.data.lyrics[that.data.highlightIndex];
       console.log("currentLyric", currentLyric)
       // 获取当前行歌词文本，按空格分割成词
       const words = currentLyric.original.split('');
       console.log("countSpecialChars", words)
       // 计算每个词的播放时间，假设每个词的播放时间均匀分配
-      const lineDuration = this.data.lyrics[this.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
+      const lineDuration = that.data.lyrics[that.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
       const wordDuration = lineDuration / words.length; // 每个词的播放时间
 
       // 遍历当前行的每个词，判断当前时间是否达到该词的播放时间，并检查是否包含 '#' 或 '_'
@@ -184,11 +194,11 @@ Page({
           && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
           const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
           console.log("Send：", includesNum)
-          this.togglePlayback();
-          this.send(includesNum);
+          that.togglePlayback();
+          that.send(includesNum);
           let nowIndex = processedIndex + 1
           // console.log("nowIndex", nowIndex);
-          this.setData({
+          that.setData({
             processedIndex: nowIndex,
             shan: includesNum
           })
@@ -216,21 +226,15 @@ Page({
     let highlightIndex = this.data.lyrics.findIndex((item) => item.time <= currentTime && (this.data.lyrics[this.data.lyrics.indexOf(item) + 1] ? this.data.lyrics[this.data.lyrics.indexOf(item) + 1].time > currentTime : true));
 
     if (highlightIndex !== -1 && highlightIndex !== this.data.highlightIndex) {
-      console.log("nowhighlightIndex", highlightIndex)
-      // console.log(highlightIndex !== this.data.highlightIndex)
       this.setData({
         highlightIndex,
         processedIndex: 0,
       });
 
-      // 计算滚动位置，确保高亮歌词居中
-      const lineHeight = 70; // 每行歌词的高度（根据需要调整）
-      const containerHeight = 550; // 假设歌词容器的高度为 300（根据需要调整）
-      const centerOffset = Math.floor(containerHeight / 2 - lineHeight / 2); // 居中偏移量
-
+      const average = this.data.maxScrollTop / this.data.lyrics.length
       // 计算 scrollTop 使高亮歌词居中
-      const scrollTop = Math.max(0, highlightIndex * lineHeight - centerOffset);
-
+      const scrollTop = average * highlightIndex
+      console.log(scrollTop)
       this.setData({
         scrollTop, // 设置 scrollTop
       });
@@ -339,62 +343,89 @@ Page({
   },
   onScroll(event) {
     const scrollTop = event.detail.scrollTop;
-    const lineHeight = 56; // 假设每行歌词的高度为40px
-    const index = Math.floor(scrollTop / lineHeight);
-    if (index >= 0 && index < this.data.formattedLyrics.length) {
-      const time = this.data.formattedLyrics[index].time;
+
+    const average = this.data.maxScrollTop / this.data.lyrics.length;
+
+    const index = Math.floor(scrollTop / average);
+    if (index >= 0 && index < this.data.lyrics.length) {
+      const time = index == 0 ? 0: this.data.lyrics[index].time;
       this.setData({
         currentTime: time,
         highlightIndex: index,
         processedIndex: 0,
-        isPaused: false
+        isPaused: false,
+        // scrollTop: scrollTo
+      }, () => {
+        setTimeout(() => {
+          this.startLyricsScroll(); // 继续播放
+        }, 1000)
       });
-
-      // 确保高亮的歌词行居中显示
-      const containerHeight = 552; // 假设容器高度已存储在data中
-      const scrollTo = (index * lineHeight) - (containerHeight / 2) + (lineHeight / 2);
-      this.setData({
-        scrollTop: scrollTo
-      });
-
-      setTimeout(() => {
-        this.startLyricsScroll(); // 继续播放
-      }, 500)
-
     }
   },
 
   over() {
-    let device_id = app.globalData.device_id
-    let service_id = app.globalData.service_id;
-    let char_id = app.globalData.char_id;
-    if (!device_id || !service_id || !char_id) {
-      console.error("error:require deviceid");
-      return;
+    console.log("isover",this.data.isover)
+    if (!this.data.isover) {
+      let device_id = app.globalData.device_id
+      let service_id = app.globalData.service_id;
+      let char_id = app.globalData.char_id;
+      if (!device_id || !service_id || !char_id) {
+        console.error("error:require deviceid");
+        return;
+      }
+
+      const sendBuf = new Uint8Array(3);
+      sendBuf[0] = 0x30;
+      sendBuf[1] = 0;
+      sendBuf[2] = 0;
+      // TODO: 将歌词转换成utf8编码数组， 这个需求20250119不搞
+
+      wx.writeBLECharacteristicValue({
+        deviceId: device_id,
+        serviceId: service_id,
+        characteristicId: char_id,
+        value: sendBuf.buffer,
+        success(res) {
+          console.log("writeBLECharacteristicValue success", res.errMsg);
+        },
+      });
+
+      this.setData({
+        isover:true,
+        isPaused:true
+      })
+      clearInterval(this.timer); 
     }
 
-    const sendBuf = new Uint8Array(3);
-    sendBuf[0] = 0x30;
-    sendBuf[1] = 0;
-    sendBuf[2] = 0;
-    // TODO: 将歌词转换成utf8编码数组， 这个需求20250119不搞
-
-    wx.writeBLECharacteristicValue({
-      deviceId: device_id,
-      serviceId: service_id,
-      characteristicId: char_id,
-      value: sendBuf.buffer,
-      success(res) {
-        console.log("writeBLECharacteristicValue success", res.errMsg);
-      },
-    });
   },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
+    this.measureScrollViewHeight()
+  },
 
+  measureScrollViewHeight() {
+    const query = wx.createSelectorQuery().in(this);
+    query.select('.lyrics-container') // 选择 class 为 'lyrics-container' 的元素
+      .boundingClientRect(rect => {
+        // 容器高度
+        const containerHeight = rect.height;
+        // 內容高度
+        const contentHeight = 70 * this.data.lyrics.length;
+        console.log("內容高度 ", contentHeight)
+        // 计算最大 scrollTop
+        const maxScrollTop = Math.max(contentHeight - containerHeight, 0);
+        console.log("计算最大scrollTop ", maxScrollTop)
+        this.setData({
+          containerHeight: containerHeight,
+          maxScrollTop: maxScrollTop
+        });
+
+
+
+      }).exec();
   },
 
   /**

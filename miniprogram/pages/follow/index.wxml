@@ -25,16 +25,13 @@
 
 </view>
 <view class="container-follow">
-  <!-- <scroll-view class="lyrics-container" scroll-y="true" scroll-with-animation scroll-top="{{scrollTop}}">
-    <view wx:for="{{lyrics}}" wx:key="index" class="lyric-line" data-index="{{index}}">
-      <text class="lyric-text {{item.highlight ? 'highlight' : ''}}">{{item.text}}</text>
-    </view>
-  </scroll-view> -->
-  <scroll-view class="lyrics-container" scroll-y="true" bindscroll="onScroll">
+  <!-- <view class="zw-bottom" style="height: {{viewHeight}}px;"></view> -->
+  <scroll-view class="lyrics-container" scroll-y="true" scroll-top="{{scrollTop}}" bindscroll="onScroll">
+    <!-- <view class="zw-top" style="height: {{viewHeight}}px;"></view> -->
     <view wx:for="{{formattedLyrics}}" wx:key="index" class="lyric-line" data-index="{{index}}">
-      <!-- <text class="lyric-text {{index === highlightIndex ? 'highlight' : ''}}">{{item.text}}</text> -->
       <rich-text class="lyric-text {{index === highlightIndex ? 'highlight' : index === highlightIndex+1?'nexthighlight':'nohighlight'}} lyric-ss-{{shan}} active-{{processedIndex}}" nodes="{{item.text}}"></rich-text>
     </view>
+    <!-- <view class="zw-bottom" style="height: {{viewHeight}}px;"></view> -->
   </scroll-view>
 </view>
 <!-- <button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button> -->
