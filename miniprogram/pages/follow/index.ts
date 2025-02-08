@@ -358,7 +358,7 @@ Page({
       }, () => {
         setTimeout(() => {
           this.startLyricsScroll(); // 继续播放
-        }, 1000)
+        }, 500)
       });
     }
   },
