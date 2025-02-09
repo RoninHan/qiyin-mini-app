@@ -341,7 +341,7 @@ Page({
 
     const average = this.data.maxScrollTop / this.data.lyrics.length;
 
-    const index = Math.floor(scrollTop / average);
+    const index = Math.round(scrollTop / average);
     if (index >= 0 && index < this.data.lyrics.length) {
       const time = index == 0 ? 0 : this.data.lyrics[index].time;
       this.setData({
