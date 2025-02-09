@@ -59,20 +59,21 @@ Component({
   },
   lifetimes: {
     attached() {
-      const rect = wx.getMenuButtonBoundingClientRect()
+      const rect = wx.getMenuButtonBoundingClientRect();
       wx.getSystemInfo({
         success: (res) => {
-          const isAndroid = res.platform === 'android'
-          const isDevtools = res.platform === 'devtools'
+          const isAndroid = res.platform === 'android';
+          const isDevtools = res.platform === 'devtools';
+          const safeAreaTop = res.safeArea?.top || 0; // 确保 safeArea.top 存在
           this.setData({
             ios: !isAndroid,
             innerPaddingRight: `padding-right: ${res.windowWidth - rect.left}px`,
-            leftWidth: `width: ${res.windowWidth - rect.left }px`,
-            safeAreaTop: isDevtools || isAndroid ? `height: calc(var(--height) + ${res.safeArea.top}px); padding-top: ${res.safeArea.top}px` : ``
-          })
+            leftWidth: `width: ${res.windowWidth - rect.left}px`,
+            safeAreaTop: `padding-top: ${safeAreaTop}px; height: calc(var(--height) + ${safeAreaTop}px);`
+          });
         }
-      })
-    },
+      });
+    }
   },
   /**
    * 组件的方法列表
