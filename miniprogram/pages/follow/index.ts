@@ -30,7 +30,8 @@ Page({
     shan: 0,
     containerHeight: 0,
     maxScrollTop: 0,
-    isover: false
+    isover: false,
+    currentIndex: 0
   },
 
   /**
@@ -158,18 +159,16 @@ Page({
         // console.log("totalDuration: ", totalDuration);
         if (that.data.currentTime >= totalDuration && !that.data.isover) {
           that.setData({ isover: true });
-          setTimeout(()=>{
+          setTimeout(() => {
             that.over()
-          },500)
-          
+          }, 500)
+
         }
         return;
       }
       console.log("currentTime", that.data.currentTime)
       // 更新当前时间
-      that.setData({
-        currentTime: that.data.currentTime + 1,
-      });
+      
 
       // 获取当前歌词行和它的播放时间
       const currentLyric = that.data.lyrics[that.data.highlightIndex];
@@ -180,17 +179,16 @@ Page({
       // 计算每个词的播放时间，假设每个词的播放时间均匀分配
       const lineDuration = that.data.lyrics[that.data.highlightIndex + 1]?.time - currentLyric.time || totalDuration - currentLyric.time;
       const wordDuration = lineDuration / words.length; // 每个词的播放时间
-
+      that.setData({
+        currentTime: that.data.currentTime + wordDuration,
+      });
       // 遍历当前行的每个词，判断当前时间是否达到该词的播放时间，并检查是否包含 '#' 或 '_'
-      let timeElapsed = 0; // 累计时间，表示已播放的时间
+      let timeElapsed = that.data.timeElapsed; // 累计时间，表示已播放的时间
       let processedIndex = that.data.processedIndex;
-      let i = 0;
-      while (i < words.length) {
-        const word = words[i];
-        timeElapsed += wordDuration; // 当前词的播放时间
 
+      if(that.data.currentIndex<words.length){
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
-        if ((word.includes('#') || word.includes('_'))
+        if ((words[that.data.currentIndex].includes('#') || words[that.data.currentIndex].includes('_'))
           && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
           const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
           console.log("Send：", includesNum)
@@ -202,19 +200,15 @@ Page({
             processedIndex: nowIndex,
             shan: includesNum
           })
-          break;
         }
 
-        // 确保只有当时间已达到词的播放时间时才递增索引
-        if (timeElapsed >= (i + 1) * wordDuration) {
-          i++; // 等待当前词的播放时间结束后才递增索引
-        }
+        this.setData({
+          timeElapsed,
+          currentLyric,
+          currentIndex: that.data.currentIndex + 1
+        })
       }
-
-      this.setData({
-        timeElapsed,
-        currentLyric
-      })
+      
       // 更新歌词高亮和滚动位置
       this.updateLyricsHighlight();
     }, 1000);
@@ -229,6 +223,7 @@ Page({
       this.setData({
         highlightIndex,
         processedIndex: 0,
+        currentIndex: 0
       });
 
       const average = this.data.maxScrollTop / this.data.lyrics.length
@@ -348,7 +343,7 @@ Page({
 
     const index = Math.floor(scrollTop / average);
     if (index >= 0 && index < this.data.lyrics.length) {
-      const time = index == 0 ? 0: this.data.lyrics[index].time;
+      const time = index == 0 ? 0 : this.data.lyrics[index].time;
       this.setData({
         currentTime: time,
         highlightIndex: index,
@@ -364,7 +359,7 @@ Page({
   },
 
   over() {
-    console.log("isover",this.data.isover)
+    console.log("isover", this.data.isover)
     if (!this.data.isover) {
       let device_id = app.globalData.device_id
       let service_id = app.globalData.service_id;
@@ -391,10 +386,10 @@ Page({
       });
 
       this.setData({
-        isover:true,
-        isPaused:true
+        isover: true,
+        isPaused: true
       })
-      clearInterval(this.timer); 
+      clearInterval(this.timer);
     }
 
   },

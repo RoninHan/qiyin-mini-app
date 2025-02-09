@@ -2,10 +2,10 @@
 App<IAppOption>({
   globalData: {
     device_id: "CC:8D:A2:2E:01:9A",
-    is_android:true,
+    is_android: true,
     isConnected: false,
-    service_id:"",
-    char_id:""
+    service_id: "",
+    char_id: ""
   },
   onLaunch() {
     let that = this;
@@ -93,15 +93,15 @@ App<IAppOption>({
     //                   deviceId: that.globalData.device_id,
     //                   success(res) {
     //                     console.log('device services:', res.services)
-    //                     for(let ser of res.services) {
-    //                       if(ser.uuid.includes("00FF") || ser.uuid.includes("00ff")) {
+    //                     for (let ser of res.services) {
+    //                       if (ser.uuid.includes("00FF") || ser.uuid.includes("00ff")) {
     //                         that.globalData.service_id = ser.uuid;
     //                         wx.getBLEDeviceCharacteristics({
     //                           deviceId: that.globalData.device_id,
     //                           serviceId: ser.uuid,
     //                           success(res) {
     //                             for (let char of res.characteristics) {
-    //                               if(char.uuid.includes("FF01") || char.uuid.includes("ff01")) {
+    //                               if (char.uuid.includes("FF01") || char.uuid.includes("ff01")) {
     //                                 that.globalData.char_id = char.uuid;
     //                                 wx.notifyBLECharacteristicValueChange({
     //                                   state: true,
@@ -117,7 +117,7 @@ App<IAppOption>({
     //                                     })
     //                                   },
     //                                   fail: (e) => {
-    //                                     console.log('notifyBLECharacteristicValueChange fail',e)
+    //                                     console.log('notifyBLECharacteristicValueChange fail', e)
     //                                   }
     //                                 })
     //                               }
@@ -147,12 +147,12 @@ App<IAppOption>({
   // 初始化蓝牙适配器
   initBluetooth() {
     const targetDeviceId = this.globalData.device_id;
-    console.log(`开始连接指定设备：${targetDeviceId}`);
+    // console.log(`开始连接指定设备：${targetDeviceId}`);
 
     // 打开蓝牙适配器
     wx.openBluetoothAdapter({
       fail: (err) => {
-        console.error("蓝牙初始化失败:", err);
+        // console.error("蓝牙初始化失败:", err);
         this.showError("请打开手机蓝牙");
         setTimeout(() => this.initBluetooth(), 3000); // 3秒后重试
       },
@@ -168,7 +168,7 @@ App<IAppOption>({
     wx.onBLEConnectionStateChange(res => {
       console.log(`连接状态变更：${res.connected ? "已连接" : "已断开"}`);
       this.globalData.isConnected = res.connected;
-      
+
       if (!res.connected) {
         this.showError("设备已断开，正在重连...");
         this.startConnectProcess();
@@ -182,7 +182,6 @@ App<IAppOption>({
 
     this.stopDiscovery(() => {
       this.startDiscovery();
-      this.setDiscoveryTimeout();
     });
   },
   // 停止设备发现
@@ -193,106 +192,106 @@ App<IAppOption>({
   },
   // 开始设备发现
   startDiscovery() {
+    let that = this;
     wx.startBluetoothDevicesDiscovery({
       success: () => {
         console.log("正在扫描设备...");
-        this.listenDeviceFound();
+        that.listenDeviceFound();
       },
       fail: (err) => {
         console.error("扫描启动失败:", err);
-        setTimeout(() => this.startConnectProcess(), 2000);
+        setTimeout(() => that.startConnectProcess(), 2000);
       }
     });
   },
   // 设备发现监听
   listenDeviceFound() {
+    let that = this;
     wx.onBluetoothDeviceFound(res => {
       var devices = res.devices;
       if (devices[0].deviceId == that.globalData.device_id || devices[0].name == 'qiyin') {
+        that.globalData.device_id = devices[0].deviceId
         console.log("发现目标设备，停止扫描");
-        this.stopDiscovery(() => this.connectDevice());
+        wx.stopBluetoothDevicesDiscovery();
+        that.connectDevice(devices[0].deviceId)
       }
     });
   },
 
-  // 设置扫描超时（10秒）
-  setDiscoveryTimeout() {
-    setTimeout(() => {
-      if (!this.globalData.isConnected) {
-        console.log("扫描超时，重新尝试");
-        this.startConnectProcess();
-      }
-    }, 10000);
-  },
-
   // 连接设备
-  connectDevice() {
-    const deviceId = this.globalData.device_id;
+  connectDevice(deviceId: any) {
+    let that = this;
     console.log(`尝试连接设备：${deviceId}`);
 
     wx.createBLEConnection({
       deviceId,
       success: () => {
         console.log("设备连接成功");
-        this.setupServiceDiscovery();
+        that.setupServiceDiscovery();
       },
       fail: (err) => {
         console.error("连接失败:", err);
-        this.startConnectProcess();
+        that.startConnectProcess();
       }
     });
   },
 
   // 发现服务
   setupServiceDiscovery() {
+    let that = this;
     wx.getBLEDeviceServices({
-      deviceId: this.globalData.device_id,
+      deviceId: that.globalData.device_id,
       success: (res) => {
         const service = res.services.find(s => s.uuid.toLowerCase().includes("00ff"));
         if (service) {
-          this.globalData.service_id = service.uuid;
-          this.discoverCharacteristics();
+          that.globalData.service_id = service.uuid;
+          that.discoverCharacteristics();
         } else {
-          this.handleServiceError();
+          that.handleServiceError();
         }
       },
-      fail: (err) => this.handleServiceError()
+      fail: (err) => that.handleServiceError()
     });
   },
 
   // 发现特征值
   discoverCharacteristics() {
+    let that = this;
+    console.log("开始发现特征值");
+    console.log("serviceId:", that.globalData.service_id);
+    console.log("device_id:", that.globalData.device_id);
     wx.getBLEDeviceCharacteristics({
-      deviceId: this.globalData.device_id,
-      serviceId: this.globalData.service_id,
+      deviceId: that.globalData.device_id,
+      serviceId: that.globalData.service_id,
       success: (res) => {
         const characteristic = res.characteristics.find(c => c.uuid.toLowerCase().includes("ff01"));
         if (characteristic) {
-          this.globalData.char_id = characteristic.uuid;
-          this.enableNotifications();
+          that.globalData.char_id = characteristic.uuid;
+          that.enableNotifications();
         } else {
-          this.handleCharacteristicError();
+          that.handleCharacteristicError();
         }
       },
-      fail: (err) => this.handleCharacteristicError()
+      fail: (err) => that.handleCharacteristicError()
     });
   },
 
   // 启用通知
   enableNotifications() {
+    let that = this;
     wx.notifyBLECharacteristicValueChange({
-      deviceId: this.globalData.device_id,
-      serviceId: this.globalData.service_id,
-      characteristicId: this.globalData.char_id,
+      deviceId: that.globalData.device_id,
+      serviceId: that.globalData.service_id,
+      characteristicId: that.globalData.char_id,
       state: true,
       success: () => {
         console.log("通知已启用");
-        this.globalData.isConnected = true;
+        that.globalData.isConnected = true;
         wx.showToast({ title: "连接成功", icon: "success" });
       },
       fail: (err) => {
         console.error("通知启用失败:", err);
-        this.startConnectProcess();
+        that.startConnectProcess();
       }
     });
   },
