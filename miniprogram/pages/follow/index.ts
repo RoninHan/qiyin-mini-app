@@ -39,6 +39,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    let that = this
     this.getlyrics(options.id, options.name)
     // const id = JSON.parse(decodeURIComponent(options.id));
     // this.startLyricsScroll();
@@ -49,6 +50,14 @@ Page({
       switch (u8Buf[0]) {
         case 0x11:
           console.log("dev trig"); // 设备按正确组合后发送
+          if (that.data.processedArray.length <= that.data.highlightIndex + 1) {
+            let includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex + 1][1];
+            if (that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex + 1) {
+              includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
+            }
+            console.log("send:", includesNum)
+            that.send(includesNum);
+          }
           this.togglePlayback();
           break;
         default:
@@ -196,9 +205,11 @@ Page({
           that.data.timer = 0
           that.setData({ isPaused: true }, () => {
             const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
-            console.log("Send：", includesNum)
+            if (that.data.highlightIndex === 0 && that.data.processedIndex === 0) {
+              console.log("Send：", includesNum)
 
-            that.send(includesNum);
+              that.send(includesNum);
+            }
             let nowIndex = processedIndex + 1
             // console.log("nowIndex", nowIndex);
             that.setData({
