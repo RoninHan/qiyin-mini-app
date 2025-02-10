@@ -31,7 +31,8 @@ Page({
     containerHeight: 0,
     maxScrollTop: 0,
     isover: false,
-    currentIndex: 0
+    currentIndex: 0,
+    timer: 0
   },
 
   /**
@@ -151,10 +152,11 @@ Page({
     const that = this;
     const totalDuration = that.data.lyrics[that.data.lyrics.length - 1].time + 6; // 获取歌词总时长
     // console.log(totalDuration)
-    this.timer = setInterval(() => {
+    clearInterval(this.data.timer)
+    this.data.timer = setInterval(() => {
       if (that.data.currentTime >= totalDuration || that.data.isPaused) {
-        clearInterval(that.timer); // 停止定时器
-
+        clearInterval(that.data.timer); // 停止定时器
+        that.data.timer = 0;
         // console.log("currentTime: ", that.data.currentTime);
         // console.log("totalDuration: ", totalDuration);
         if (that.data.currentTime >= totalDuration && !that.data.isover) {
@@ -168,7 +170,7 @@ Page({
       }
       console.log("currentTime", that.data.currentTime)
       // 更新当前时间
-      
+
 
       // 获取当前歌词行和它的播放时间
       const currentLyric = that.data.lyrics[that.data.highlightIndex];
@@ -186,20 +188,24 @@ Page({
       let timeElapsed = that.data.timeElapsed; // 累计时间，表示已播放的时间
       let processedIndex = that.data.processedIndex;
 
-      if(that.data.currentIndex<words.length){
+      if (that.data.currentIndex < words.length) {
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
         if ((words[that.data.currentIndex].includes('#') || words[that.data.currentIndex].includes('_'))
           && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
-          const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
-          console.log("Send：", includesNum)
-          that.togglePlayback();
-          that.send(includesNum);
-          let nowIndex = processedIndex + 1
-          // console.log("nowIndex", nowIndex);
-          that.setData({
-            processedIndex: nowIndex,
-            shan: includesNum
-          })
+          clearInterval(that.data.timer); // 暂停播放
+          that.data.timer = 0
+          that.setData({ isPaused: true }, () => {
+            const includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
+            console.log("Send：", includesNum)
+
+            that.send(includesNum);
+            let nowIndex = processedIndex + 1
+            // console.log("nowIndex", nowIndex);
+            that.setData({
+              processedIndex: nowIndex,
+              shan: includesNum
+            })
+          });
         }
 
         this.setData({
@@ -208,7 +214,7 @@ Page({
           currentIndex: that.data.currentIndex + 1
         })
       }
-      
+
       // 更新歌词高亮和滚动位置
       this.updateLyricsHighlight();
     }, 1000);
@@ -242,8 +248,10 @@ Page({
       this.setData({ isPaused: false });
       this.startLyricsScroll(); // 继续播放
     } else {
-      this.setData({ isPaused: true });
-      clearInterval(this.timer); // 暂停播放
+      this.setData({ isPaused: true }, () => {
+        clearInterval(this.data.timer); // 暂停播放
+      });
+
     }
   },
 
@@ -389,7 +397,7 @@ Page({
         isover: true,
         isPaused: true
       })
-      clearInterval(this.timer);
+      clearInterval(this.data.timer);
     }
 
   },
