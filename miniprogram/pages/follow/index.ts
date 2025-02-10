@@ -25,6 +25,7 @@ Page({
 
     processedArray: [],
     processedIndex: 0,
+    deviceIndex:0,
     timeElapsed: 0,
     song_name: "旅行的意义",
     shan: 0,
@@ -50,13 +51,26 @@ Page({
       switch (u8Buf[0]) {
         case 0x11:
           console.log("dev trig"); // 设备按正确组合后发送
-          if (that.data.processedArray.length <= that.data.highlightIndex + 1) {
-            let includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex + 1][1];
-            if (that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex + 1) {
+          if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
+            let newprocessedIndex = that.data.processedIndex
+            let includesNum = 0;
+            if (that.data.processedArray[that.data.highlightIndex].length - 1 === newprocessedIndex) {
               includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
+              that.setData({
+                currentTime : that.data.lyrics[that.data.highlightIndex + 1].time
+              },()=>{
+                that.updateLyricsHighlight();
+              })
+            
+            }else{
+              includesNum =  that.data.processedArray[that.data.highlightIndex][newprocessedIndex ][1];
             }
             console.log("send:", includesNum)
             that.send(includesNum);
+            that.setData({
+              processedIndex:newprocessedIndex + 1,
+              includesNum:includesNum
+            })
           }
           this.togglePlayback();
           break;
@@ -209,11 +223,17 @@ Page({
               console.log("Send：", includesNum)
 
               that.send(includesNum);
+              // that.setData({
+              //   deviceIndex : that.data.deviceIndex + 1
+              // })
+              let nowIndex = processedIndex + 1
+              that.setData({
+                processedIndex: nowIndex
+              })
             }
-            let nowIndex = processedIndex + 1
+            
             // console.log("nowIndex", nowIndex);
             that.setData({
-              processedIndex: nowIndex,
               shan: includesNum
             })
           });
