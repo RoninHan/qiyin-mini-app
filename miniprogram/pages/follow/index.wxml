@@ -34,4 +34,4 @@
     <!-- <view class="zw-bottom" style="height: {{viewHeight}}px;"></view> -->
   </scroll-view>
 </view>
-<button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button>
+<!-- <button bindtap="togglePlayback">{{isPaused ? '继续' : '暂停'}}</button> -->

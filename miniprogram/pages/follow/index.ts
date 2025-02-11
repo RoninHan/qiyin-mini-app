@@ -25,7 +25,7 @@ Page({
 
     processedArray: [],
     processedIndex: 0,
-    deviceIndex:0,
+    deviceIndex: 0,
     timeElapsed: 0,
     song_name: "旅行的意义",
     shan: 0,
@@ -54,22 +54,22 @@ Page({
           if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
             let newprocessedIndex = that.data.processedIndex
             let includesNum = 0;
-            if (that.data.processedArray[that.data.highlightIndex].length - 1 === newprocessedIndex) {
+            if (that.data.processedArray[that.data.highlightIndex].length === newprocessedIndex) {
               includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
               that.setData({
-                currentTime : that.data.lyrics[that.data.highlightIndex + 1].time
-              },()=>{
+                currentTime: that.data.lyrics[that.data.highlightIndex + 1].time
+              }, () => {
                 that.updateLyricsHighlight();
               })
-            
-            }else{
-              includesNum =  that.data.processedArray[that.data.highlightIndex][newprocessedIndex ][1];
+
+            } else {
+              includesNum = that.data.processedArray[that.data.highlightIndex][newprocessedIndex][1];
             }
             console.log("send:", includesNum)
             that.send(includesNum);
             that.setData({
-              processedIndex:newprocessedIndex + 1,
-              includesNum:includesNum
+              processedIndex: newprocessedIndex + 1,
+              includesNum: includesNum
             })
           }
           this.togglePlayback();
@@ -214,7 +214,7 @@ Page({
       if (that.data.currentIndex < words.length) {
         // 如果当前时间接近该词的播放时间并且词中包含 '#' 或 '_'
         if ((words[that.data.currentIndex].includes('#') || words[that.data.currentIndex].includes('_'))
-          && that.data.processedArray[that.data.highlightIndex].length - 1 >= that.data.processedIndex) {
+          && that.data.processedArray[that.data.highlightIndex].length >= that.data.processedIndex) {
           clearInterval(that.data.timer); // 暂停播放
           that.data.timer = 0
           that.setData({ isPaused: true }, () => {
@@ -231,7 +231,7 @@ Page({
                 processedIndex: nowIndex
               })
             }
-            
+
             // console.log("nowIndex", nowIndex);
             that.setData({
               shan: includesNum
@@ -259,7 +259,7 @@ Page({
     if (highlightIndex !== -1 && highlightIndex !== this.data.highlightIndex) {
       this.setData({
         highlightIndex,
-        processedIndex: 0,
+        processedIndex: 1,
         currentIndex: 0
       });
 
@@ -277,25 +277,33 @@ Page({
   togglePlayback() {
     const that = this;
     if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
-      let newprocessedIndex = that.data.processedIndex
+      let newprocessedIndex = that.data.processedIndex;
+      const currentLyric = that.data.lyrics[that.data.highlightIndex];
+      let currentIndex = 0;
       let includesNum = 0;
-      if (that.data.processedArray[that.data.highlightIndex].length - 1 === newprocessedIndex) {
+      if (that.data.processedArray[that.data.highlightIndex].length === newprocessedIndex) {
         includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
+        currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex + 1][0])
         that.setData({
-          currentTime : that.data.lyrics[that.data.highlightIndex + 1].time
-        },()=>{
+          currentTime: that.data.lyrics[that.data.highlightIndex + 1].time,
+          shan: includesNum
+        }, () => {
           that.updateLyricsHighlight();
         })
-      
-      }else{
-        includesNum =  that.data.processedArray[that.data.highlightIndex][newprocessedIndex ][1];
+
+      } else {
+        includesNum = that.data.processedArray[that.data.highlightIndex][newprocessedIndex][1];
+        currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex][newprocessedIndex])
       }
+
+      that.setData({
+        currentIndex: currentIndex,
+        processedIndex: newprocessedIndex + 1,
+        includesNum: includesNum
+      })
       console.log("send:", includesNum)
       that.send(includesNum);
-      that.setData({
-        processedIndex:newprocessedIndex + 1,
-        includesNum:includesNum
-      })
+
     }
     if (this.data.isPaused) {
       this.setData({ isPaused: false });
@@ -408,7 +416,7 @@ Page({
       this.setData({
         currentTime: time,
         highlightIndex: index,
-        processedIndex: 0,
+        processedIndex: 1,
         isPaused: false,
         // scrollTop: scrollTo
       }, () => {
