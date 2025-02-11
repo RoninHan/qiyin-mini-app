@@ -65,12 +65,12 @@ Page({
               }, () => {
                 that.updateLyricsHighlight();
               })
-      
+
             } else {
               includesNum = that.data.processedArray[that.data.highlightIndex][newprocessedIndex][1];
               currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex][newprocessedIndex])
             }
-      
+
             that.setData({
               currentIndex: currentIndex,
               processedIndex: newprocessedIndex + 1,
@@ -78,7 +78,7 @@ Page({
             })
             console.log("send:", includesNum)
             that.send(includesNum);
-      
+
           }
           this.togglePlayback();
           break;
@@ -226,11 +226,11 @@ Page({
           clearInterval(that.data.timer); // 暂停播放
           that.data.timer = 0
           that.setData({ isPaused: true }, () => {
-            let includesNum =0;
-            if(that.data.processedArray[that.data.highlightIndex] > that.data.processedIndex){
+            let includesNum = 0 //that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1];
+            if (that.data.processedArray[that.data.highlightIndex].length > that.data.processedIndex) {
               includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex][1]
-            }else if (that.data.processedArray[that.data.highlightIndex] === that.data.processedIndex){
-              includesNum  = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex-1][1]
+            } else if (that.data.processedArray[that.data.highlightIndex].length === that.data.processedIndex) {
+              includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex - 1][1]
             }
             if (that.data.highlightIndex === 0 && that.data.processedIndex === 0) {
               console.log("Send：", includesNum)
@@ -276,9 +276,9 @@ Page({
         currentIndex: 0
       });
 
-      const average = this.data.maxScrollTop / this.data.lyrics.length
+      const average = Math.round(this.data.maxScrollTop / this.data.lyrics.length)
       // 计算 scrollTop 使高亮歌词居中
-      const scrollTop = average * highlightIndex
+      const scrollTop = Math.round(average * highlightIndex)
       console.log(scrollTop)
       this.setData({
         scrollTop, // 设置 scrollTop
@@ -289,7 +289,37 @@ Page({
   // 切换播放和暂停状态
   togglePlayback() {
     const that = this;
-    
+
+    if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
+      let newprocessedIndex = that.data.processedIndex;
+      const currentLyric = that.data.lyrics[that.data.highlightIndex];
+      let currentIndex = 0;
+      let includesNum = 0;
+      if (that.data.processedArray[that.data.highlightIndex].length === newprocessedIndex) {
+        includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
+        currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex + 1][0])
+        that.setData({
+          currentTime: that.data.lyrics[that.data.highlightIndex + 1].time,
+          shan: includesNum
+        }, () => {
+          that.updateLyricsHighlight();
+        })
+
+      } else {
+        includesNum = that.data.processedArray[that.data.highlightIndex][newprocessedIndex][1];
+        currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex][newprocessedIndex])
+      }
+
+      that.setData({
+        currentIndex: currentIndex,
+        processedIndex: newprocessedIndex + 1,
+        includesNum: includesNum
+      })
+      console.log("send:", includesNum)
+      that.send(includesNum);
+
+    }
+
     if (this.data.isPaused) {
       this.setData({ isPaused: false });
       this.startLyricsScroll(); // 继续播放
