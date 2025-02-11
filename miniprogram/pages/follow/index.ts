@@ -299,35 +299,35 @@ Page({
   togglePlayback() {
     const that = this;
 
-    if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
-      let newprocessedIndex = that.data.processedIndex;
-      const currentLyric = that.data.lyrics[that.data.highlightIndex];
-      let currentIndex = 0;
-      let includesNum = 0;
-      if (that.data.processedArray[that.data.highlightIndex].length === newprocessedIndex) {
-        includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
-        currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex + 1][0])
-        that.setData({
-          currentTime: that.data.lyrics[that.data.highlightIndex + 1].time,
-          shan: includesNum
-        }, () => {
-          that.updateLyricsHighlight();
-        })
+    // if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
+    //   let newprocessedIndex = that.data.processedIndex;
+    //   const currentLyric = that.data.lyrics[that.data.highlightIndex];
+    //   let currentIndex = 0;
+    //   let includesNum = 0;
+    //   if (that.data.processedArray[that.data.highlightIndex].length === newprocessedIndex) {
+    //     includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
+    //     currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex + 1][0])
+    //     that.setData({
+    //       currentTime: that.data.lyrics[that.data.highlightIndex + 1].time,
+    //       shan: includesNum
+    //     }, () => {
+    //       that.updateLyricsHighlight();
+    //     })
 
-      } else {
-        includesNum = that.data.processedArray[that.data.highlightIndex][newprocessedIndex][1];
-        currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex][newprocessedIndex])
-      }
+    //   } else {
+    //     includesNum = that.data.processedArray[that.data.highlightIndex][newprocessedIndex][1];
+    //     currentIndex = currentLyric.original.indexOf(that.data.processedArray[that.data.highlightIndex][newprocessedIndex])
+    //   }
 
-      that.setData({
-        currentIndex: currentIndex,
-        processedIndex: newprocessedIndex + 1,
-        includesNum: includesNum
-      })
-      console.log("send:", includesNum)
-      that.send(includesNum);
+    //   that.setData({
+    //     currentIndex: currentIndex,
+    //     processedIndex: newprocessedIndex + 1,
+    //     includesNum: includesNum
+    //   })
+    //   console.log("send:", includesNum)
+    //   that.send(includesNum);
 
-    }
+    // }
 
     if (this.data.isPaused) {
       this.setData({ isPaused: false });
