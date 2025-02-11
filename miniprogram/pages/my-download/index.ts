@@ -83,4 +83,10 @@ Page({
       icon: 'success',
     });
   },
+
+  onClickLeft(){
+    wx.navigateBack({
+      delta: 1
+    });
+  },
 })

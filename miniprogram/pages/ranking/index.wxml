@@ -1,7 +1,13 @@
 <!--pages/ranking/index.wxml-->
 <!-- pages/ranking/ranking.wxml -->
-<navigation-bar title="评分" back="{{true}}" color="white" background="#000"></navigation-bar>
-
+<!-- <navigation-bar title="评分" back="{{true}}" color="white" background="#000"></navigation-bar> -->
+<van-nav-bar
+  title="评分"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+  left-arrow
+  bind:click-left="onClickLeft"
+/>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view style="width: 95%;margin:0 auto;">
     <drop-menu value="{{value}}" option="{{option}}"></drop-menu>

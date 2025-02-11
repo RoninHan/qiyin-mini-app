@@ -1,5 +1,10 @@
 <!--pages/ai/ai.wxml-->
-<navigation-bar title="AI写歌" back="{{false}}" color="white" background="#000"></navigation-bar>
+<!-- <navigation-bar title="AI写歌" back="{{false}}" color="white" background="#000"></navigation-bar> -->
+<van-nav-bar
+  title="AI写歌"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+/>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view style="width: 95%;margin:0 auto;">
     <drop-menu value="{{value}}" option="{{option}}"></drop-menu>

@@ -1,5 +1,12 @@
 <!--pages/version-update/index.wxml-->
-<navigation-bar title="版本更新" back="{{true}}" color="white" background="#000"></navigation-bar>
+<!-- <navigation-bar title="版本更新" back="{{true}}" color="white" background="#000"></navigation-bar> -->
+<van-nav-bar
+  title="版本更新"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+  left-arrow
+  bind:click-left="onClickLeft"
+/>
 
 <view>
   <view class="version-list">

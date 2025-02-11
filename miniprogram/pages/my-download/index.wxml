@@ -1,5 +1,12 @@
 <!--pages/my-download/index.wxml-->
-<navigation-bar title="我的下載" back="{{true}}" color="white" background="#000"></navigation-bar>
+<!-- <navigation-bar title="我的下載" back="{{true}}" color="white" background="#000"></navigation-bar> -->
+<van-nav-bar
+  title="我的下載"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+  left-arrow
+  bind:click-left="onClickLeft"
+/>
 <view class="song-list">
   <block wx:for="{{songs}}" wx:key="index">
     <view class="song-item">

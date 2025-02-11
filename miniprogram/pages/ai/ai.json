@@ -1,6 +1,7 @@
 {
   "usingComponents": {
     "navigation-bar": "/components/navigation-bar/navigation-bar",
-    "drop-menu":"/components/drop-menu/drop-menu"
+    "drop-menu":"/components/drop-menu/drop-menu",
+    "van-nav-bar": "@vant/weapp/nav-bar/index"
   }
 }

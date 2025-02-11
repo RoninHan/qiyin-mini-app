@@ -1,6 +1,12 @@
 <!--pages/follow/index.wxml-->
-<navigation-bar title="弹跳跟随" back="{{true}}" color="white" background="#000"></navigation-bar>
-
+<!-- <navigation-bar title="弹跳跟随" back="{{true}}" color="white" background="#000"></navigation-bar> -->
+<van-nav-bar
+  title="弹跳跟随"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+  left-arrow
+  bind:click-left="onClickLeft"
+/>
 <view style="width: 95%;margin:0 auto;">
   <drop-menu value="{{value}}" option="{{option}}"></drop-menu>
 </view>

@@ -1,5 +1,10 @@
 <!--pages/song/song.wxml-->
-<navigation-bar title="歌曲" back="{{false}}" color="white" background="#000"></navigation-bar>
+<!-- <navigation-bar title="歌曲" back="{{false}}" color="white" background="#000"></navigation-bar> -->
+<van-nav-bar
+  title="歌曲"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+/>
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container-song">
     <!-- 搜索框 -->

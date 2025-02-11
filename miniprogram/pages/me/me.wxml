@@ -1,5 +1,12 @@
 <!--pages/me/me.wxml-->
-<navigation-bar title="个人页面" back="{{false}}" color="white" background="#000"></navigation-bar>
+<!-- <navigation-bar title="个人页面" back="{{false}}" color="white" background="#000"></navigation-bar> -->
+
+<van-nav-bar
+  title="个人页面"
+  custom-style="background-color:black;color:white;"
+  border="{{false}}"
+/>
+
 <!-- 用户信息 -->
 <view class="user-info">
   <image class="avatar" src="/public/testavatar.png" />
