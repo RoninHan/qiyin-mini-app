@@ -275,6 +275,28 @@ Page({
 
   // 切换播放和暂停状态
   togglePlayback() {
+    const that = this;
+    if (that.data.processedArray.length >= that.data.highlightIndex + 1) {
+      let newprocessedIndex = that.data.processedIndex
+      let includesNum = 0;
+      if (that.data.processedArray[that.data.highlightIndex].length - 1 === newprocessedIndex) {
+        includesNum = that.data.processedArray[that.data.highlightIndex + 1][0][1];
+        that.setData({
+          currentTime : that.data.lyrics[that.data.highlightIndex + 1].time
+        },()=>{
+          that.updateLyricsHighlight();
+        })
+      
+      }else{
+        includesNum =  that.data.processedArray[that.data.highlightIndex][newprocessedIndex ][1];
+      }
+      console.log("send:", includesNum)
+      that.send(includesNum);
+      that.setData({
+        processedIndex:newprocessedIndex + 1,
+        includesNum:includesNum
+      })
+    }
     if (this.data.isPaused) {
       this.setData({ isPaused: false });
       this.startLyricsScroll(); // 继续播放
