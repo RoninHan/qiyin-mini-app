@@ -33,7 +33,8 @@ Page({
     maxScrollTop: 0,
     isover: false,
     currentIndex: 0,
-    timer: 0
+    timer: 0,
+    isScroll: false
   },
 
   /**
@@ -232,16 +233,24 @@ Page({
             } else if (that.data.processedArray[that.data.highlightIndex].length === that.data.processedIndex) {
               includesNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex - 1][1]
             }
-            if (that.data.highlightIndex === 0 && that.data.processedIndex === 0) {
-              console.log("Send：", includesNum)
+            if (that.data.highlightIndex === 0 && that.data.processedIndex === 0 || this.data.isScroll) {
 
+              if (this.data.isScroll) {
+                const scrollNum = that.data.processedArray[that.data.highlightIndex][that.data.processedIndex - 1][1];
+
+                console.log("Send：", scrollNum)
+                that.send(scrollNum);
+              }
+              console.log("Send：", includesNum)
               that.send(includesNum);
               // that.setData({
               //   deviceIndex : that.data.deviceIndex + 1
               // })
               let nowIndex = processedIndex + 1
+
               that.setData({
-                processedIndex: nowIndex
+                processedIndex: nowIndex,
+                isScroll: false
               })
             }
 
@@ -275,7 +284,7 @@ Page({
         processedIndex: 1,
         currentIndex: 0
       });
-
+      console.log("highlightIndex", highlightIndex)
       const average = Math.round(this.data.maxScrollTop / this.data.lyrics.length)
       // 计算 scrollTop 使高亮歌词居中
       const scrollTop = Math.round(average * highlightIndex)
@@ -420,26 +429,68 @@ Page({
     const index = event.currentTarget.dataset.index;
     this.setData({ highlightIndex: index });
   },
+
+  touchstart(event) {
+    this.setData({
+      isScroll: true,
+      isPaused: true
+    });
+    if (this.data.timer) {
+      clearInterval(this.data.timer);
+      this.setData({
+        timer: 0
+      })
+    }
+  },
+
+  touchend(event) {
+    if (this.data.timer !== 0) return;
+    this.setData({
+      isPaused: false,
+      processedIndex: 0,
+      currentIndex: 0
+    }, () => {
+      this.startLyricsScroll();
+    })
+
+  },
+
   onScroll(event) {
     const scrollTop = event.detail.scrollTop;
+    console.log("scrollTop", scrollTop)
 
-    const average = this.data.maxScrollTop / this.data.lyrics.length;
-
-    const index = Math.round(scrollTop / average);
+    const index = Math.round(scrollTop / 70);
     if (index >= 0 && index < this.data.lyrics.length) {
+
       const time = index == 0 ? 0 : this.data.lyrics[index].time;
+
+      // setTimeout(() => {
       this.setData({
         currentTime: time,
-        highlightIndex: index,
-        processedIndex: 1,
-        isPaused: false,
-        // scrollTop: scrollTo
-      }, () => {
-        setTimeout(() => {
-          this.startLyricsScroll(); // 继续播放
-        }, 500)
-      });
+        // highlightIndex: index,
+        // processedIndex: 1,
+        // isPaused: false,
+      })
+      // }, 500)
+
     }
+    // const average = this.data.maxScrollTop / this.data.lyrics.length;
+
+    // const index = Math.round(scrollTop / average);
+    // if (index >= 0 && index < this.data.lyrics.length) {
+    //   const time = index == 0 ? 0 : this.data.lyrics[index].time;
+    //   this.setData({
+    //     currentTime: time,
+    //     highlightIndex: index,
+    //     processedIndex: 1,
+    //     isPaused: false,
+    //     // scrollTop: scrollTo
+    //   }, () => {
+    //     setTimeout(() => {
+    //       this.startLyricsScroll(); // 继续播放
+    //     }, 500)
+    //   });
+    // }
   },
 
   over() {
